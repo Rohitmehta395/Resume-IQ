@@ -1,15 +1,8 @@
 const multer = require('multer');
 const path = require('path');
 
-// Set storage engine
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
+// Set storage engine to memory
+const storage = multer.memoryStorage();
 
 // Check file type
 function checkFileType(file, cb) {

@@ -13,6 +13,17 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Ensure URL doesn't have a leading slash to avoid overriding the baseURL path
+    if (config.url && config.url.startsWith('/')) {
+      config.url = config.url.substring(1);
+    }
+
+    // Ensure baseURL ends with a slash
+    if (config.baseURL && !config.baseURL.endsWith('/')) {
+      config.baseURL = config.baseURL + '/';
+    }
+
     return config;
   },
   (error) => {

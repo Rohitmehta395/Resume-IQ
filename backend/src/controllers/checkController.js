@@ -16,14 +16,12 @@ exports.analyzeResume = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Please upload a resume file' });
     }
 
-    if (!jobTitle || !jobDescription) {
-      // Clean up uploaded file if validation fails
-      if (req.file.path) fs.unlinkSync(req.file.path);
-      return res.status(400).json({ success: false, message: 'Job title and description are required' });
-    }
-
-    // 1. Extract resume text
-    const { text: resumeText, wordCount } = await resumeParser.parseResume(req.file.path, req.file.mimetype);
+    // 1. Extract resume text from buffer
+    const { text: resumeText, wordCount } = await resumeParser.parseResume(
+      req.file.buffer, 
+      req.file.mimetype,
+      req.file.originalname
+    );
 
     // 2. Parse resume sections
     const parsedResume = resumeSectionParser.parseResumeStructure(resumeText);
@@ -117,10 +115,6 @@ exports.analyzeResume = async (req, res, next) => {
     });
 
   } catch (error) {
-    // Cleanup file if it still exists
-    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
-    }
     next(error);
   }
 };

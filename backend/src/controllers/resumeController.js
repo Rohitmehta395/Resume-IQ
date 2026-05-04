@@ -14,8 +14,7 @@ exports.uploadResume = async (req, res, next) => {
   }
 
   try {
-    const filePath = path.join(__dirname, '../../uploads', req.file.filename);
-    const result = await parseResume(filePath, req.file.mimetype);
+    const result = await parseResume(req.file.buffer, req.file.mimetype, req.file.originalname);
     
     // Structure parsing
     const structuredData = parseResumeStructure(result.text);
