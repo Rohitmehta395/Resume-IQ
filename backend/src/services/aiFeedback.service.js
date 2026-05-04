@@ -59,7 +59,7 @@ RETURN ONLY A VALID JSON OBJECT â€” no markdown, no backticks, no explanation â€
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
