@@ -24,7 +24,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message = error.response?.data?.message || 'Something went wrong';
+    const message = error.response?.data?.message || error.message || 'Something went wrong';
     
     // Don't toast for 401 on /me or other common background checks if you prefer
     // But for now, let's keep it simple
@@ -34,7 +34,18 @@ api.interceptors.response.use(
       // window.location.href = '/login'; // Optional: force redirect
     }
 
-    console.error('API Error:', message);
+    // Detailed error logging for debugging deployment
+    console.error('API Error Details:', {
+      message: message,
+      status: error.response?.status,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+        baseURL: error.config?.baseURL,
+      }
+    });
+
     return Promise.reject(error);
   }
 );
