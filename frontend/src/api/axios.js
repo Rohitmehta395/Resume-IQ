@@ -14,15 +14,11 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Ensure URL doesn't have a leading slash to avoid overriding the baseURL path
-    if (config.url && config.url.startsWith('/')) {
-      config.url = config.url.substring(1);
-    }
-
-    // Ensure baseURL ends with a slash
-    if (config.baseURL && !config.baseURL.endsWith('/')) {
-      config.baseURL = config.baseURL + '/';
-    }
+    // Ensure baseURL ends with /api/
+    let base = import.meta.env.VITE_API_URL || '';
+    if (base && !base.endsWith('/')) base += '/';
+    if (base && !base.endsWith('api/')) base += 'api/';
+    config.baseURL = base;
 
     return config;
   },

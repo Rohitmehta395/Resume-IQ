@@ -93,7 +93,7 @@ const Report = () => {
         return;
       }
       try {
-        const res = await api.get(`/checks/${reportId}`);
+        const res = await api.get(`checks/${reportId}`);
         setReport(res.data.data);
       } catch (err) {
         console.error("Failed to fetch report", err);

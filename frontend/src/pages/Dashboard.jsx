@@ -94,7 +94,7 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get("/checks");
+        const res = await api.get("checks");
         setReports(res.data.data);
       } catch (err) {
         const msg = err.response?.data?.message || "Failed to load history.";
@@ -111,7 +111,7 @@ const Dashboard = () => {
     setDeletingId(id);
     const tid = toast.loading("Deleting…");
     try {
-      await api.delete(`/checks/${id}`);
+      await api.delete(`checks/${id}`);
       setReports((prev) => prev.filter((r) => r._id !== id));
       toast.success("Deleted", { id: tid });
     } catch {
