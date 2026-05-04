@@ -25,12 +25,18 @@ const getWordCount = (text) => {
  * Extract text from PDF buffer
  */
 const extractFromPDF = async (buffer) => {
+  if (!buffer || buffer.length === 0) {
+    throw new Error('PDF buffer is empty or undefined');
+  }
   try {
     const data = await pdf(buffer);
+    if (!data || !data.text) {
+      throw new Error('No text content extracted from PDF');
+    }
     return cleanText(data.text);
   } catch (error) {
-    console.error('PDF Parse Error:', error);
-    throw new Error('Failed to parse PDF file');
+    console.error('PDF Parse Error Details:', error);
+    throw new Error(`Failed to parse PDF file: ${error.message}`);
   }
 };
 
@@ -38,12 +44,18 @@ const extractFromPDF = async (buffer) => {
  * Extract text from DOCX buffer
  */
 const extractFromDOCX = async (buffer) => {
+  if (!buffer || buffer.length === 0) {
+    throw new Error('DOCX buffer is empty or undefined');
+  }
   try {
     const result = await mammoth.extractRawText({ buffer: buffer });
+    if (!result || !result.value) {
+      throw new Error('No text content extracted from DOCX');
+    }
     return cleanText(result.value);
   } catch (error) {
-    console.error('DOCX Parse Error:', error);
-    throw new Error('Failed to parse DOCX file');
+    console.error('DOCX Parse Error Details:', error);
+    throw new Error(`Failed to parse DOCX file: ${error.message}`);
   }
 };
 
