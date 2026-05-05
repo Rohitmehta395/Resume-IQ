@@ -27,7 +27,7 @@ const Hero = ({ onStart }) => {
 
             <h1 className="headline-lg text-on-surface mb-8 animate-fade-in [animation-delay:200ms]">
               Land Your Dream Job with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+              <span className="text-transparent bg-clip-text bg-[#1BA4E9]">
                 AI-Powered
               </span>{" "}
               Resume Optimization
@@ -51,7 +51,11 @@ const Hero = ({ onStart }) => {
               <Button
                 size="lg"
                 variant="secondary"
-                onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() =>
+                  document
+                    .getElementById("how-it-works")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
                 className="w-full sm:w-auto min-w-[200px] h-14 cursor-pointer"
               >
                 How it Works
@@ -88,7 +92,7 @@ const Hero = ({ onStart }) => {
                   <div className="relative w-36 h-36 md:w-44 md:h-44 flex items-center justify-center mb-8 shrink-0">
                     {/* Blurred background glow for the ring */}
                     <div className="absolute inset-2 rounded-full score-inner-glow"></div>
-                    
+
                     <svg className="w-full h-full transform -rotate-90 score-glow-ring">
                       <circle
                         cx="50%"
@@ -117,7 +121,9 @@ const Hero = ({ onStart }) => {
                         <span className="text-4xl md:text-5xl font-semibold text-on-surface tracking-tighter">
                           82
                         </span>
-                        <span className="text-base font-semibold text-on-surface ml-0.5">%</span>
+                        <span className="text-base font-semibold text-on-surface ml-0.5">
+                          %
+                        </span>
                       </div>
                       <span className="text-[10px] font-bold text-tertiary uppercase tracking-[0.25em] mt-1">
                         EXCELLENT
@@ -143,7 +149,10 @@ const Hero = ({ onStart }) => {
                         { label: "Skills", value: "88%" },
                         { label: "Impact", value: "76%" },
                       ].map((metric, i) => (
-                        <div key={i} className="metric-box py-2.5 px-1 rounded-2xl">
+                        <div
+                          key={i}
+                          className="metric-box py-2.5 px-1 rounded-2xl"
+                        >
                           <p className="text-[8px] uppercase font-bold text-on-surface/30 tracking-widest mb-1">
                             {metric.label}
                           </p>
