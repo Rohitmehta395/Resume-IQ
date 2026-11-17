@@ -57,54 +57,67 @@ RETURN ONLY A VALID JSON OBJECT â€” no markdown, no backticks, no explanation â€
 }
 `;
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+  // Verified available models for this API key in order of availability & throughput
+  const candidateModels = [
+    process.env.GEMINI_MODEL || "gemini-flash-lite-latest",
+    "gemini-3.5-flash-lite",
+    "gemini-3.8-flash",
+    "gemini-flash-latest",
+  ];
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+  const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Strip markdown code fences if present
-    const clean = text.replace(/```json|```/g, "").trim();
-    const aiResult = JSON.parse(clean);
+  for (const modelName of candidateModels) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
 
-    return {
-      ...aiResult,
-      isAiGenerated: true,
-    };
-  } catch (error) {
-    console.error("Gemini AI Feedback Generation Failed:", error);
-    return getFallbackFeedback(analysisData);
+      // Strip markdown code fences if present
+      const clean = text.replace(/```json|```/g, "").trim();
+      const aiResult = JSON.parse(clean);
+
+      return {
+        ...aiResult,
+        isAiGenerated: true,
+      };
+    } catch (error) {
+      console.warn(`[Gemini AI] Model "${modelName}" failed (${error.status || error.message}). Trying fallback model...`);
+    }
   }
+
+  console.error("All Gemini AI candidate models temporarily unavailable. Using rule-based fallback feedback.");
+  return getFallbackFeedback(analysisData);
 };
 
 const getFallbackFeedback = (data) => {
+  const missing = data?.missingSkills?.slice(0, 3)?.join(", ");
   return {
     overallFeedback:
-      "Your resume shows some relevant experience, but there is room for optimization to better align with the job requirements. Focus on incorporating the missing skills and quantifying your achievements.",
+      "Your resume demonstrates foundational alignment with the role, but key technical competencies and quantifiable achievements are required to consistently pass enterprise ATS screening filters.",
     topIssues: [
-      "Missing critical skills requested in the job description.",
-      "Keywords from the JD are not sufficiently present in the text.",
-      "Formatting could be improved for better ATS readability.",
+      missing ? `Missing key required competencies: ${missing}.` : "Missing critical skills requested in the job description.",
+      "Bullet points focus on routine job duties rather than quantifiable outcomes (X-Y-Z formula).",
+      "Keyword density from the job posting is below the optimal ATS threshold.",
     ],
     sectionFeedback: {
       summary:
-        "Ensure your summary highlights your most relevant achievements for this specific role.",
+        "Ensure your summary is tailored directly to this role and incorporates top target keywords in the opening sentence.",
       skills:
-        "Organize your skills into categories and include all technical tools mentioned in the JD that you know.",
+        "Organize technical skills into distinct categories (Languages, Frameworks, Cloud/DevOps) matching the job posting terminology.",
       experience:
-        "Use action verbs and quantify your results (e.g., increased sales by 20%).",
+        "Lead each bullet with strong action verbs and quantify the impact (e.g., latency reduction, user scale, cost efficiency).",
       projects:
-        "Focus on projects that demonstrate the core technologies required for this job.",
+        "Showcase projects that demonstrate hands-on experience with the target stack and architecture patterns.",
       education:
-        "Ensure your degree and relevant certifications are clearly listed.",
+        "Ensure degree, relevant coursework, and industry-recognized certifications are formatted with standard ATS headings.",
     },
     rewriteSuggestions: [
       {
-        original: "Responsible for developing web applications.",
+        original: "Responsible for developing web applications and fixing bugs.",
         improved:
-          "Developed and maintained high-performance web applications using React and Node.js, improving load times by 15%.",
-        reason: "Adds specificity and quantifies the impact.",
+          "Architected and deployed responsive web applications using React and Node.js, reducing page load times by 28% across 100K+ monthly active users.",
+        reason: "Replaces passive task descriptions with specific technologies, quantified metrics, and business scale.",
       },
     ],
     isAiGenerated: false,
