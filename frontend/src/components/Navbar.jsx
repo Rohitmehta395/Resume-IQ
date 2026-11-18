@@ -7,7 +7,6 @@ import {
   X,
   LayoutDashboard,
   Target,
-  Sparkles,
   Plus,
   ArrowRight,
 } from "lucide-react";
@@ -63,20 +62,15 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-18">
           {/* Brand Logo */}
-          <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-sky-500 p-0.5 shadow-md shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all duration-300">
-              <div className="w-full h-full bg-white dark:bg-[#090D16] rounded-[10px] flex items-center justify-center transition-colors">
-                <Sparkles className="w-5 h-5 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform" />
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-1 font-sans">
-                Resume<span className="text-indigo-600 dark:text-indigo-400">IQ</span>
-                <span className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-500/20 ml-1 font-semibold">
-                  PRO
-                </span>
-              </span>
-            </div>
+          <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2.5 group">
+            <img
+              src="/favicon.png"
+              alt="ResumeIQ"
+              className="w-9 h-9 rounded-xl object-contain shadow-xs group-hover:scale-105 transition-transform duration-200"
+            />
+            <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white font-sans">
+              Resume<span className="text-indigo-600 dark:text-indigo-400">IQ</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}

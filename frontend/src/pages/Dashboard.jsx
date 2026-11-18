@@ -292,7 +292,7 @@ const Dashboard = () => {
             unit: "",
             icon: Zap,
             color: "sky",
-            desc: "Pro tier capacity",
+            desc: "Monthly scan capacity",
           },
         ].map((s, i) => (
           <Card key={i} hover className="p-5 sm:p-6 relative overflow-hidden flex flex-col justify-between">

@@ -1,4 +1,4 @@
-import { Sparkles, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -9,11 +9,11 @@ const Footer = () => {
           {/* Brand info (Span 5) */}
           <div className="md:col-span-5">
             <Link to="/" className="flex items-center gap-2.5 mb-5 group w-fit">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-sky-500 p-0.5 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-white dark:bg-[#090D16] rounded-[10px] flex items-center justify-center transition-colors">
-                  <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                </div>
-              </div>
+              <img
+                src="/favicon.png"
+                alt="ResumeIQ"
+                className="w-9 h-9 rounded-xl object-contain shadow-xs group-hover:scale-105 transition-transform duration-200"
+              />
               <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white font-sans">
                 Resume<span className="text-indigo-600 dark:text-indigo-400">IQ</span>
               </span>
@@ -22,7 +22,7 @@ const Footer = () => {
               Precision ATS algorithm simulation and AI career intelligence. Built to help students and high-performing professionals secure top-tier interviews.
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-              ENGINE VERSION 2.8.4 // PRO REVISION
+              ENGINE VERSION 2.8.4 // RELEASE
             </p>
           </div>
 

@@ -5,7 +5,6 @@ import {
   Check,
   X,
   ChevronDown,
-  Sparkles,
   Layers,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -121,9 +120,11 @@ const Hero = ({ onStart }) => {
               {/* Top Window Bar */}
               <div className="px-5 py-3 border-b border-slate-100 dark:border-white/[0.08] flex items-center justify-between bg-slate-50/50 dark:bg-[#121A2D]">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                    <Sparkles className="w-3.5 h-3.5" />
-                  </div>
+                  <img
+                    src="/favicon.png"
+                    alt="ResumeIQ"
+                    className="w-5 h-5 rounded-md object-contain"
+                  />
                   <span className="text-xs font-extrabold tracking-tight text-slate-800 dark:text-white font-sans">
                     Resume<span className="text-emerald-500">IQ</span>
                   </span>
