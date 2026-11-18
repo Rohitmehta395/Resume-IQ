@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FileText,
   Upload,
@@ -68,13 +68,14 @@ const StepItem = ({ number, label, done, active }) => (
 
 const Analyze = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     jobTitle: "",
     companyName: "",
     jobDescription: "",
   });
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(() => location.state?.file || null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisStep, setAnalysisStep] = useState(0);
   const [dragOver, setDragOver] = useState(false);
