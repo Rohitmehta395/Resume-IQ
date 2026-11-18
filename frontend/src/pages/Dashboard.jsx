@@ -10,153 +10,170 @@ import {
   AlertCircle,
   Zap,
   Target,
-  Sparkles,
-  History,
   Search,
   TrendingUp,
-  ArrowUpRight,
+  ArrowRight,
 } from "lucide-react";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import EmptyState from "../components/ui/EmptyState";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import Badge from "../components/ui/Badge";
+import Modal from "../components/ui/Modal";
+import Tabs from "../components/ui/Tabs";
 
-/* ─── micro helpers ───────────────────────────────────────────────── */
-const ScoreArc = ({ score, size = 56 }) => {
+/* ─── Circular Score Dial Component ─────────────────────────────────── */
+const ScoreDial = ({ score, size = 56 }) => {
   const r = 22;
   const circ = 2 * Math.PI * r;
   const offset = circ - (circ * score) / 100;
   const color =
     score >= 80
-      ? "#10b981"
+      ? "#10B981" // Emerald
       : score >= 60
-        ? "#8b5cf6"
-        : score >= 40
-          ? "#0ea5e9"
-          : "#ef4444";
+      ? "#6366F1" // Indigo
+      : score >= 40
+      ? "#0EA5E9" // Sky
+      : "#EF4444"; // Rose
+
   return (
-    <svg
-      width={size}
-      height={size}
-      className="-rotate-90"
-      style={{ flexShrink: 0 }}
-    >
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={r}
-        stroke="rgba(255,255,255,0.06)"
-        strokeWidth="3.5"
-        fill="none"
-      />
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={r}
-        stroke={color}
-        strokeWidth="3.5"
-        fill="none"
-        strokeLinecap="round"
-        strokeDasharray={circ}
-        strokeDashoffset={offset}
-        style={{ filter: `drop-shadow(0 0 5px ${color}50)` }}
-      />
-    </svg>
+    <div className="relative shrink-0 flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          stroke="rgba(255, 255, 255, 0.08)"
+          strokeWidth="3.5"
+          fill="none"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          stroke={color}
+          strokeWidth="3.5"
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={circ}
+          strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 0.8s ease" }}
+        />
+      </svg>
+      <span
+        className="absolute inset-0 flex items-center justify-center text-xs font-extrabold font-mono"
+        style={{ color }}
+      >
+        {score}
+      </span>
+    </div>
   );
 };
 
-const BarRow = ({ label, value, color }) => (
-  <div className="flex items-center gap-3">
-    <span className="text-xs font-semibold text-on-surface-variant/50 w-20 shrink-0">
+/* ─── Score Bar Row ─────────────────────────────────────────────────── */
+const BreakdownMiniBar = ({ label, value, color }) => (
+  <div className="flex items-center gap-3 text-xs font-mono">
+    <span className="text-slate-400 w-20 shrink-0 font-sans text-[11px] truncate">
       {label}
     </span>
-    <div className="flex-1 h-1 bg-white/[0.06] rounded-full overflow-hidden">
+    <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
       <div
-        className="h-full rounded-full transition-all duration-700"
-        style={{ width: `${value}%`, backgroundColor: color }}
+        className="h-full rounded-full transition-all duration-500"
+        style={{ width: `${value || 0}%`, backgroundColor: color }}
       />
     </div>
-    <span className="text-xs font-bold w-8 text-right" style={{ color }}>
-      {value}
+    <span className="text-[11px] font-bold w-8 text-right text-slate-200">
+      {value || 0}%
     </span>
   </div>
 );
-/* ──────────────────────────────────────────────────────────────────── */
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [deletingId, setDeletingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all");
+
+  // Modal State for Delete
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    (async () => {
+    const fetchReports = async () => {
       try {
         const res = await api.get("checks");
-        setReports(res.data.data);
+        setReports(res.data.data || []);
       } catch (err) {
-        const msg = err.response?.data?.message || "Failed to load history.";
+        const msg = err.response?.data?.message || "Failed to load scan history.";
         setError(msg);
         toast.error(msg);
       } finally {
         setLoading(false);
       }
-    })();
+    };
+    fetchReports();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this report? This cannot be undone.")) return;
-    setDeletingId(id);
-    const tid = toast.loading("Deleting…");
+  const confirmDelete = async () => {
+    if (!deleteTargetId) return;
+    setDeleting(true);
+    const tid = toast.loading("Removing report…");
     try {
-      await api.delete(`checks/${id}`);
-      setReports((prev) => prev.filter((r) => r._id !== id));
-      toast.success("Deleted", { id: tid });
+      await api.delete(`checks/${deleteTargetId}`);
+      setReports((prev) => prev.filter((r) => r._id !== deleteTargetId));
+      toast.success("Report deleted successfully.", { id: tid });
     } catch {
-      toast.error("Failed to delete", { id: tid });
+      toast.error("Failed to delete report.", { id: tid });
     } finally {
-      setDeletingId(null);
+      setDeleting(false);
+      setDeleteTargetId(null);
     }
   };
 
   const getScoreMeta = (s) => {
     if (s >= 80)
       return {
-        label: "Excellent",
-        color: "#10b981",
-        bg: "rgba(16,185,129,0.1)",
-        border: "rgba(16,185,129,0.2)",
+        label: "High Match",
+        color: "emerald",
+        textColor: "text-emerald-400",
+        borderColor: "border-emerald-500/30",
+        badge: "emerald",
       };
     if (s >= 60)
       return {
-        label: "High Match",
-        color: "#8b5cf6",
-        bg: "rgba(139,92,246,0.1)",
-        border: "rgba(139,92,246,0.2)",
+        label: "Good Match",
+        color: "indigo",
+        textColor: "text-indigo-400",
+        borderColor: "border-indigo-500/30",
+        badge: "indigo",
       };
     if (s >= 40)
       return {
         label: "Average",
-        color: "#0ea5e9",
-        bg: "rgba(14,165,233,0.1)",
-        border: "rgba(14,165,233,0.2)",
+        color: "sky",
+        textColor: "text-sky-400",
+        borderColor: "border-sky-500/30",
+        badge: "sky",
       };
     return {
       label: "Needs Work",
-      color: "#ef4444",
-      bg: "rgba(239,68,68,0.1)",
-      border: "rgba(239,68,68,0.2)",
+      color: "rose",
+      textColor: "text-rose-400",
+      borderColor: "border-rose-500/30",
+      badge: "rose",
     };
   };
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <LoadingSpinner size="lg" />
-        <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40">
-          Loading…
+        <LoadingSpinner size="lg" color="primary" />
+        <p className="text-xs font-mono uppercase tracking-widest text-slate-400">
+          Loading Candidate Dossiers…
         </p>
       </div>
     );
@@ -164,356 +181,363 @@ const Dashboard = () => {
 
   const avgScore = reports.length
     ? Math.round(
-        reports.reduce((a, r) => a + r.score.overallScore, 0) / reports.length,
+        reports.reduce((a, r) => a + (r.score?.overallScore || 0), 0) /
+          reports.length
       )
     : 0;
+
   const topScore = reports.length
-    ? Math.max(...reports.map((r) => r.score.overallScore))
+    ? Math.max(...reports.map((r) => r.score?.overallScore || 0))
     : 0;
 
-  const filtered = reports.filter(
-    (r) =>
+  // Filtered reports
+  const filtered = reports.filter((r) => {
+    const matchesSearch =
       r.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (r.companyName &&
-        r.companyName.toLowerCase().includes(searchQuery.toLowerCase())),
-  );
+        r.companyName.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const score = r.score?.overallScore || 0;
+    if (!matchesSearch) return false;
+
+    if (selectedFilter === "high") return score >= 80;
+    if (selectedFilter === "average") return score >= 60 && score < 80;
+    if (selectedFilter === "low") return score < 60;
+    return true;
+  });
+
+  const filterTabs = [
+    { id: "all", label: "All Scans", count: reports.length },
+    {
+      id: "high",
+      label: "High Match (≥80%)",
+      count: reports.filter((r) => (r.score?.overallScore || 0) >= 80).length,
+    },
+    {
+      id: "average",
+      label: "Average (60-79%)",
+      count: reports.filter(
+        (r) =>
+          (r.score?.overallScore || 0) >= 60 &&
+          (r.score?.overallScore || 0) < 80
+      ).length,
+    },
+    {
+      id: "low",
+      label: "Needs Work (<60%)",
+      count: reports.filter((r) => (r.score?.overallScore || 0) < 60).length,
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-10 animate-fade-in">
-        {/* ══ PAGE HEADER ══ */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
-              AI Career Accelerator
-            </p>
-            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-on-surface leading-none">
-              Your Dashboard
-            </h1>
+    <div className="space-y-8 animate-fade-in">
+      {/* ══ HEADER ══ */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+              Candidate Command Center
+            </span>
           </div>
-          <button
-            onClick={() => navigate("/analyze")}
-            className="self-start sm:self-auto flex items-center gap-2 px-5 py-3 rounded-2xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/25 cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            New Analysis
-          </button>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight font-sans">
+            ATS Performance Overview
+          </h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Track your optimization trajectory across every job application.
+          </p>
         </div>
 
-        {/* ══ STAT CARDS ══ */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            {
-              label: "Total Reports",
-              value: reports.length,
-              unit: "",
-              icon: FileText,
-              color: "#0ea5e9",
-            },
-            {
-              label: "Avg. Score",
-              value: avgScore,
-              unit: "%",
-              icon: Target,
-              color: "#10b981",
-            },
-            {
-              label: "Top Score",
-              value: topScore,
-              unit: "%",
-              icon: Sparkles,
-              color: "#8b5cf6",
-            },
-            {
-              label: "Credits Used",
-              value: reports.length,
-              unit: "/50",
-              icon: Zap,
-              color: "#f59e0b",
-            },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-5 sm:p-6 relative overflow-hidden hover:border-white/[0.12] transition-all"
-            >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-5"
-                style={{
-                  backgroundColor: `${s.color}15`,
-                  border: `1px solid ${s.color}25`,
-                }}
-              >
-                <s.icon className="w-5 h-5" style={{ color: s.color }} />
-              </div>
-              <p className="text-4xl font-semibold tracking-tight text-on-surface leading-none mb-2">
-                {s.value}
-                <span className="text-xl font-bold text-on-surface-variant/40">
-                  {s.unit}
+        <Button
+          onClick={() => navigate("/analyze")}
+          variant="primary"
+          size="md"
+          className="self-start sm:self-auto gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          Run New ATS Scan
+        </Button>
+      </div>
+
+      {/* ══ BENCHMARK STAT CARDS ══ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {[
+          {
+            label: "Total Scans",
+            value: reports.length,
+            unit: "",
+            icon: FileText,
+            color: "indigo",
+            desc: "Resumes audited",
+          },
+          {
+            label: "Portfolio Average",
+            value: avgScore,
+            unit: "%",
+            icon: Target,
+            color: avgScore >= 75 ? "emerald" : "indigo",
+            desc: "Mean ATS score",
+          },
+          {
+            label: "Top Performer",
+            value: topScore,
+            unit: "%",
+            icon: TrendingUp,
+            color: "emerald",
+            desc: "Highest match rate",
+          },
+          {
+            label: "Scan Quota",
+            value: `${reports.length}/50`,
+            unit: "",
+            icon: Zap,
+            color: "sky",
+            desc: "Pro tier capacity",
+          },
+        ].map((s, i) => (
+          <Card key={i} hover className="p-5 sm:p-6 relative overflow-hidden flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  {s.label}
                 </span>
-              </p>
-              <p className="text-sm font-semibold text-on-surface-variant/60">
-                {s.label}
-              </p>
-              <div
-                className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-2xl opacity-20"
-                style={{ backgroundColor: s.color }}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* ══ SCORE OVERVIEW BANNER ══ */}
-        {reports.length > 0 && (
-          <div
-            className="rounded-3xl border border-white/[0.07] overflow-hidden relative"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(139,92,246,0.08) 0%, rgba(11,19,38,0) 60%)",
-            }}
-          >
-            <div
-              className="absolute inset-0 opacity-[0.03] pointer-events-none"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            />
-            <div className="relative z-10 p-7 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center gap-8 sm:gap-12">
-              <div className="text-center sm:text-left shrink-0">
-                <p className="text-7xl sm:text-8xl font-semibold tracking-tighter text-on-surface leading-none">
-                  {avgScore}
-                  <span className="text-4xl font-bold text-on-surface-variant/30">
-                    {"  "}%
-                  </span>
-                </p>
-                <p className="text-sm font-semibold text-on-surface-variant/50 mt-2">
-                  Portfolio average
-                </p>
-              </div>
-
-              <div className="w-px h-20 bg-white/[0.07] hidden sm:block" />
-
-              <div className="flex-1 w-full space-y-3">
-                <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40 mb-4">
-                  Latest report breakdown
-                </p>
-                <BarRow
-                  label="Keywords"
-                  value={reports[0]?.score.breakdown.keywordScore}
-                  color="#8b5cf6"
-                />
-                <BarRow
-                  label="Skills"
-                  value={reports[0]?.score.breakdown.skillScore}
-                  color="#10b981"
-                />
-                <BarRow
-                  label="Experience"
-                  value={reports[0]?.score.breakdown.experienceScore}
-                  color="#0ea5e9"
-                />
-                <BarRow
-                  label="Formatting"
-                  value={reports[0]?.score.breakdown.formatScore}
-                  color="#f59e0b"
-                />
-              </div>
-
-              <div className="hidden lg:flex flex-col items-end gap-2 shrink-0">
-                <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/30 mb-1">
-                  Best match
-                </p>
-                <p
-                  className="text-5xl font-black tracking-tighter"
-                  style={{ color: "#10b981" }}
-                >
-                  {topScore}%
-                </p>
-                <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-400/70">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                  Top performance
+                <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300">
+                  <s.icon className="w-4 h-4" />
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* ══ REPORTS LIST ══ */}
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06]">
-                <History className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-on-surface leading-none">
-                  Analysis History
-                </h2>
-                {reports.length > 0 && (
-                  <p className="text-sm text-on-surface-variant/50 mt-0.5">
-                    {reports.length} report{reports.length !== 1 ? "s" : ""}
-                  </p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
+                  {s.value}
+                </span>
+                {s.unit && (
+                  <span className="text-lg font-bold text-slate-400">
+                    {s.unit}
+                  </span>
                 )}
               </div>
             </div>
+            <p className="mt-3 text-xs text-slate-400 pt-3 border-t border-white/[0.06]">
+              {s.desc}
+            </p>
+          </Card>
+        ))}
+      </div>
 
-            {reports.length > 0 && (
-              <div className="relative w-full sm:w-64 group">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant/30 group-focus-within:text-primary transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Search reports…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-white/[0.07] rounded-xl text-sm text-on-surface placeholder:text-on-surface-variant/25 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
-                />
+      {/* ══ LATEST AUDIT SHOWCASE (If reports exist) ══ */}
+      {reports.length > 0 && reports[0]?.score?.breakdown && (
+        <Card className="p-6 sm:p-8 bg-gradient-to-r from-[#0F172A] via-[#162032] to-[#0F172A] border-white/[0.1] shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 relative z-10">
+            {/* Left: Score & Latest Role */}
+            <div className="flex items-center gap-6">
+              <ScoreDial score={reports[0].score.overallScore} size={84} />
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-xs font-mono font-bold mb-1.5">
+                  LATEST AUDIT
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  {reports[0].jobTitle}
+                </h3>
+                <p className="text-sm text-slate-400 flex items-center gap-1.5 mt-0.5">
+                  <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                  {reports[0].companyName || "Target Employer"}
+                </p>
               </div>
-            )}
-          </div>
-
-          {error && (
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-              <p className="text-sm font-semibold text-red-400">{error}</p>
             </div>
-          )}
 
-          {reports.length === 0 ? (
-            <EmptyState
-              icon={FileText}
-              title="No reports yet"
-              description="Upload your resume and a job description to generate your first ATS performance report."
-              actionText="Run First Analysis"
-              onAction={() => navigate("/analyze")}
+            {/* Middle: Breakdown Bars */}
+            <div className="w-full lg:w-96 space-y-2.5">
+              <BreakdownMiniBar
+                label="Keywords"
+                value={reports[0].score.breakdown.keywordScore}
+                color="#6366F1"
+              />
+              <BreakdownMiniBar
+                label="Skills"
+                value={reports[0].score.breakdown.skillScore}
+                color="#10B981"
+              />
+              <BreakdownMiniBar
+                label="Experience"
+                value={reports[0].score.breakdown.experienceScore}
+                color="#0EA5E9"
+              />
+              <BreakdownMiniBar
+                label="Formatting"
+                value={reports[0].score.breakdown.formatScore}
+                color="#F59E0B"
+              />
+            </div>
+
+            {/* Right: Quick Action */}
+            <div className="self-end lg:self-center">
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => navigate(`/report?id=${reports[0]._id}`)}
+                className="gap-2"
+              >
+                Inspect Report
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* ══ TOOLBAR: SEARCH & TABS ══ */}
+      <div className="space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <Tabs
+            tabs={filterTabs}
+            activeTab={selectedFilter}
+            onChange={setSelectedFilter}
+            size="sm"
+          />
+
+          <div className="relative w-full lg:w-72">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search by role or company…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-[#0F172A] border border-white/[0.08] hover:border-white/[0.15] focus:border-indigo-500 rounded-xl text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all font-sans"
             />
-          ) : filtered.length === 0 ? (
-            <EmptyState
-              icon={Search}
-              title="Nothing found"
-              description={`No reports match "${searchQuery}".`}
-              actionText="Clear Search"
-              onAction={() => setSearchQuery("")}
-            />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              {filtered.map((report) => {
-                const meta = getScoreMeta(report.score.overallScore);
-                return (
-                  <div
-                    key={report._id}
-                    className="group flex flex-col rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden hover:border-white/[0.13] hover:-translate-y-0.5 transition-all duration-300"
-                  >
-                    <div
-                      className="h-[3px]"
-                      style={{ backgroundColor: meta.color, opacity: 0.7 }}
-                    />
+          </div>
+        </div>
 
-                    <div className="p-6 flex-1 space-y-5">
-                      {/* title row */}
-                      <div className="flex items-start gap-4">
-                        <div className="relative shrink-0">
-                          <ScoreArc
-                            score={report.score.overallScore}
-                            size={56}
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span
-                              className="text-[13px] font-black"
-                              style={{ color: meta.color }}
-                            >
-                              {report.score.overallScore}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex-1 min-w-0 pt-0.5">
-                          <h3
-                            className="text-base font-bold text-on-surface truncate group-hover:text-primary transition-colors leading-snug mb-1"
-                            title={report.jobTitle}
-                          >
-                            {report.jobTitle}
-                          </h3>
-                          <p className="text-sm text-on-surface-variant/50 flex items-center gap-1.5 truncate">
-                            <Building2 className="w-3.5 h-3.5 shrink-0" />
-                            {report.companyName || "Confidential"}
-                          </p>
-                        </div>
-                      </div>
+        {error && (
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm font-semibold">
+            <AlertCircle className="w-5 h-5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
-                      {/* mini bars */}
-                      <div className="space-y-2.5 py-4 border-y border-white/[0.05]">
-                        <BarRow
-                          label="Keywords"
-                          value={report.score.breakdown.keywordScore}
-                          color="#8b5cf6"
-                        />
-                        <BarRow
-                          label="Skills"
-                          value={report.score.breakdown.skillScore}
-                          color="#10b981"
-                        />
-                        <BarRow
-                          label="Experience"
-                          value={report.score.breakdown.experienceScore}
-                          color="#0ea5e9"
-                        />
-                      </div>
-
-                      {/* status + date */}
-                      <div className="flex items-center justify-between">
-                        <span
-                          className="text-xs font-bold px-3 py-1 rounded-lg border"
-                          style={{
-                            color: meta.color,
-                            borderColor: meta.border,
-                            backgroundColor: meta.bg,
-                          }}
-                        >
+        {/* ══ REPORTS GRID ══ */}
+        {reports.length === 0 ? (
+          <EmptyState
+            icon={FileText}
+            title="No ATS Reports Generated Yet"
+            description="Upload your resume and a target job description to run your first algorithmic compatibility scan."
+            actionText="Start Your First Scan"
+            onAction={() => navigate("/analyze")}
+            actionIcon={Plus}
+          />
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            icon={Search}
+            title="No Matching Reports Found"
+            description={`No analysis matches the current query "${searchQuery}" or filter selection.`}
+            actionText="Clear Filters"
+            onAction={() => {
+              setSearchQuery("");
+              setSelectedFilter("all");
+            }}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filtered.map((report) => {
+              const overall = report.score?.overallScore || 0;
+              const meta = getScoreMeta(overall);
+              return (
+                <Card
+                  key={report._id}
+                  hover
+                  padding={false}
+                  className="flex flex-col justify-between overflow-hidden group border-white/[0.08]"
+                >
+                  <div className="p-6 space-y-5">
+                    {/* Header Row */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <Badge variant={meta.badge} size="sm" className="mb-2">
                           {meta.label}
-                        </span>
-                        <span className="text-xs text-on-surface-variant/40 flex items-center gap-1.5">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {new Date(report.createdAt).toLocaleDateString()}
-                        </span>
+                        </Badge>
+                        <h3
+                          className="text-lg font-bold text-white truncate group-hover:text-indigo-400 transition-colors"
+                          title={report.jobTitle}
+                        >
+                          {report.jobTitle}
+                        </h3>
+                        <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1 truncate">
+                          <Building2 className="w-3.5 h-3.5 shrink-0" />
+                          {report.companyName || "Confidential"}
+                        </p>
                       </div>
+
+                      <ScoreDial score={overall} size={54} />
                     </div>
 
-                    {/* footer actions */}
-                    <div className="flex items-center gap-2 px-4 py-3 border-t border-white/[0.05] bg-white/[0.02]">
-                      <button
-                        onClick={() => navigate(`/report?id=${report._id}`)}
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.07] text-sm font-semibold text-on-surface-variant hover:bg-white/[0.09] hover:text-on-surface hover:border-white/[0.12] transition-all group/btn"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View Report
-                        <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover/btn:opacity-60 transition-opacity" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(report._id)}
-                        disabled={deletingId === report._id}
-                        className="flex items-center justify-center w-10 h-10 rounded-xl border border-white/[0.06] text-on-surface-variant/30 hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 transition-all disabled:opacity-40"
-                      >
-                        {deletingId === report._id ? (
-                          <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <Trash2 className="w-4 h-4" />
-                        )}
-                      </button>
+                    {/* Breakdown bars */}
+                    <div className="space-y-2 py-3 border-y border-white/[0.06]">
+                      <BreakdownMiniBar
+                        label="Keywords"
+                        value={report.score?.breakdown?.keywordScore}
+                        color="#6366F1"
+                      />
+                      <BreakdownMiniBar
+                        label="Skills"
+                        value={report.score?.breakdown?.skillScore}
+                        color="#10B981"
+                      />
+                      <BreakdownMiniBar
+                        label="Experience"
+                        value={report.score?.breakdown?.experienceScore}
+                        color="#0EA5E9"
+                      />
+                    </div>
+
+                    {/* Date stamp */}
+                    <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {new Date(report.createdAt).toLocaleDateString()}
+                      </span>
+                      <span className="text-slate-400 font-sans">
+                        Score: <strong className="text-slate-200">{overall}%</strong>
+                      </span>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
 
-        {/* footer */}
-        <div className="pt-6 border-t border-white/[0.05] flex items-center justify-center gap-3 text-xs font-semibold text-on-surface-variant/20">
-          <Sparkles className="w-3.5 h-3.5" />
-          ResumeMatch AI Intelligence Engine
-          <Sparkles className="w-3.5 h-3.5" />
-        </div>
+                  {/* Footer Actions */}
+                  <div className="flex items-center gap-2 p-3.5 bg-[#090D16] border-t border-white/[0.06]">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => navigate(`/report?id=${report._id}`)}
+                      className="flex-1 text-xs gap-1.5"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      View Dossier
+                    </Button>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTargetId(report._id)}
+                      className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-colors cursor-pointer"
+                      title="Delete Report"
+                      aria-label="Delete report"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
+
+      {/* ══ DELETE CONFIRMATION MODAL ══ */}
+      <Modal
+        isOpen={!!deleteTargetId}
+        onClose={() => setDeleteTargetId(null)}
+        title="Delete Scan Report"
+        description="Are you sure you want to delete this ATS analysis? This action cannot be undone and will permanently remove all breakdown metrics and AI rewrite suggestions."
+        confirmText="Delete Report"
+        confirmVariant="danger"
+        onConfirm={confirmDelete}
+        loading={deleting}
+      />
     </div>
   );
 };

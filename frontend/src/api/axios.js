@@ -1,5 +1,4 @@
 import axios from 'axios';
-import toast from 'react-hot-toast';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -33,15 +32,10 @@ api.interceptors.response.use(
   (error) => {
     const message = error.response?.data?.message || error.message || 'Something went wrong';
     
-    // Don't toast for 401 on /me or other common background checks if you prefer
-    // But for now, let's keep it simple
     if (error.response?.status === 401 && !window.location.pathname.includes('/login')) {
-      // Token expired or invalid
       localStorage.removeItem('token');
-      // window.location.href = '/login'; // Optional: force redirect
     }
 
-    // Detailed error logging for debugging deployment
     console.error('API Error Details:', {
       message: message,
       status: error.response?.status,

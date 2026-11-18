@@ -1,81 +1,85 @@
-import React from "react";
-import { Upload, Search, Zap, CheckCircle } from "lucide-react";
+import { Upload, FileText, Cpu, CheckCircle2, ArrowRight } from "lucide-react";
+import Card from "../ui/Card";
+import Badge from "../ui/Badge";
 
 const HowItWorks = () => {
   const steps = [
     {
+      step: "01",
       icon: Upload,
-      title: "Upload Resume",
-      description: "Drop your current PDF or Word resume. Our parser extracts every detail with precision."
+      title: "Upload Your Resume",
+      description:
+        "Drop your PDF or DOCX file. Our secure text extractor analyzes your formatting, contact details, and career chronology.",
     },
     {
-      icon: Search,
-      title: "Add Job Link",
-      description: "Paste the job description you're targeting. We'll analyze it for core requirements and hidden keywords."
+      step: "02",
+      icon: FileText,
+      title: "Paste Job Description",
+      description:
+        "Paste the posting for your target role. The engine parses the company profile, primary responsibilities, and non-negotiable qualifications.",
     },
     {
-      icon: Zap,
-      title: "AI Analysis",
-      description: "Our AI compares your profile against the role, identifying gaps and providing rewrite suggestions."
+      step: "03",
+      icon: Cpu,
+      title: "Neural ATS Audit",
+      description:
+        "Within seconds, our algorithm calculates your overall match percentage, maps matched vs. missing competencies, and tests formatting compliance.",
     },
     {
-      icon: CheckCircle,
-      title: "Apply with Confidence",
-      description: "Optimize until you hit a high match score, then download your ATS-ready resume and apply."
-    }
+      step: "04",
+      icon: CheckCircle2,
+      title: "Apply Executive Fixes",
+      description:
+        "Review AI-suggested bullet point rewrites, fill detected keyword gaps, export your audit summary, and apply with confidence.",
+    },
   ];
 
   return (
-    <section id="how-it-works" className="py-12 px-4 bg-surface relative overflow-hidden">
+    <section id="how-it-works" className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-[#080C14]">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <h2 className="label-sm text-secondary mb-4">The Process</h2>
-          <h3 className="headline-lg text-on-surface">Your Path to the Interview</h3>
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <Badge variant="sky" size="md" className="mb-4">
+            Workflow Process
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4 font-sans">
+            How ResumeIQ secures your interview.
+          </h2>
+          <p className="text-base sm:text-lg text-slate-400 leading-relaxed">
+            From raw resume to an ATS-optimized application in four streamlined steps.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {steps.map((step, idx) => (
-            <div key={idx} className="relative flex flex-col items-center text-center group">
-              {/* Connector line for desktop */}
-              {idx < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-[1px] bg-gradient-to-r from-primary/30 to-transparent -z-10"></div>
-              )}
-              
-              <div className="w-20 h-20 rounded-full glass-card border-white/10 flex items-center justify-center mb-8 relative z-10 group-hover:border-primary/50 transition-colors duration-500 shadow-ai-glow">
-                <span className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary text-white text-xs font-bold flex items-center justify-center border-2 border-surface">
-                    {idx + 1}
-                </span>
-                <step.icon className="w-8 h-8 text-on-surface" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+          {steps.map((item, idx) => (
+            <Card
+              key={idx}
+              hover
+              className="flex flex-col justify-between p-7 relative group"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <item.icon className="w-6 h-6" />
+                  </div>
+                  <span className="text-2xl font-extrabold font-mono text-slate-400 group-hover:text-indigo-400 transition-colors">
+                    {item.step}
+                  </span>
+                </div>
+
+                <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  {item.description}
+                </p>
               </div>
 
-              <h4 className="headline-md text-on-surface mb-4">{step.title}</h4>
-              <p className="body-md text-on-surface-variant max-w-[240px]">
-                {step.description}
-              </p>
-            </div>
+              <div className="mt-6 pt-4 border-t border-white/[0.06] flex items-center gap-1.5 text-xs font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors">
+                <span>Phase {idx + 1}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Card>
           ))}
-        </div>
-        
-        <div className="mt-20 p-8 glass-card border-white/5 rounded-xl flex flex-col md:flex-row items-center justify-between gap-8 max-w-4xl mx-auto">
-            <div className="flex items-center gap-6">
-                <div className="w-16 h-16 rounded-full bg-tertiary/20 flex items-center justify-center shrink-0">
-                    <CheckCircle className="w-8 h-8 text-tertiary" />
-                </div>
-                <div>
-                    <h5 className="font-bold text-on-surface">92% Average Score Increase</h5>
-                    <p className="text-sm text-on-surface-variant">Users typically double their match rate after just one round of AI suggestions.</p>
-                </div>
-            </div>
-            <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-surface bg-surface-variant flex items-center justify-center text-[10px] font-bold text-on-surface-variant overflow-hidden">
-                        <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
-                    </div>
-                ))}
-                <div className="w-10 h-10 rounded-full border-2 border-surface bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
-                    +2k
-                </div>
-            </div>
         </div>
       </div>
     </section>

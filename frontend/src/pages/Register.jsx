@@ -3,14 +3,14 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import {
-  FiMail,
-  FiLock,
-  FiUser,
-  FiArrowRight,
-  FiCheckCircle,
-  FiCheck,
-} from "react-icons/fi";
-import { HiSparkles } from "react-icons/hi2";
+  User,
+  Mail,
+  Lock,
+  ArrowRight,
+  CheckCircle2,
+  Shield,
+  Zap,
+} from "lucide-react";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
@@ -33,86 +33,93 @@ const Register = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!name || !email || !password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters.");
+      return;
+    }
+
     setLoading(true);
     try {
       await register({ name, email, password });
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully! Welcome to ResumeIQ.");
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed");
+      toast.error(err.response?.data?.message || "Registration failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="h-[calc(100vh-5rem)] w-full flex flex-col md:flex-row bg-surface overflow-hidden relative">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-1/4 -right-20 w-80 h-80 ambient-violet-glow pointer-events-none opacity-40" />
-      <div className="absolute bottom-1/4 -left-20 w-96 h-96 ambient-blue-glow pointer-events-none opacity-50" />
-
-      {/* Left Side: Info */}
-      <div className="hidden md:flex flex-1 flex-col justify-center px-12 lg:px-24 z-10 animate-fade-in">
-        <div className="max-w-xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 mb-8">
-            <FiCheckCircle className="w-4 h-4 text-secondary" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary">
-              Join 10k+ Professionals
+    <div className="min-h-[calc(100vh-4.5rem)] w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#080C14]">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        {/* Left Side: Pitch & Value Points */}
+        <div className="hidden lg:flex lg:col-span-6 flex-col justify-center pr-6 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 w-fit mb-6">
+            <Zap className="w-4 h-4 text-indigo-400" />
+            <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+              Join 15,000+ Job Seekers
             </span>
           </div>
 
-          <h1 className="display-xl text-on-surface mb-6 leading-tight">
-            Start your <span className="text-secondary">Intelligence</span>{" "}
-            Journey today.
+          <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-tight mb-6">
+            Supercharge your job search with <span className="text-indigo-400">ResumeIQ</span>.
           </h1>
 
-          <p className="body-lg text-on-surface-variant/80 mb-10 leading-relaxed">
-            Create your account to unlock advanced AI tools that analyze,
-            optimize, and accelerate your career path with data-driven
-            precision.
+          <p className="text-base text-slate-400 leading-relaxed mb-8">
+            Create your account to unlock precision ATS matching, detailed keyword diagnostics, and instant high-impact bullet rewriting.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-4 mb-8">
             {[
-              "Unlimited AI Scanning",
-              "Precision Keywords",
-              "Industry Benchmarking",
-              "Data Privacy Guaranteed",
-            ].map((feature, i) => (
+              {
+                title: "ATS Algorithm Simulation",
+                desc: "Emulates screening logic used by Workday, Taleo, Greenhouse, and Lever.",
+              },
+              {
+                title: "Precision Keyword Gap Analysis",
+                desc: "Identifies the exact technical skills and keywords missing from your resume.",
+              },
+              {
+                title: "Executive Bullet Optimization",
+                desc: "Turn weak duty descriptions into metric-driven accomplishment statements.",
+              },
+            ].map((item, idx) => (
               <div
-                key={i}
-                className="flex items-center gap-3 text-on-surface-variant/70"
+                key={idx}
+                className="flex items-start gap-3.5 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"
               >
-                <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <FiCheck className="w-3 h-3 text-primary" />
+                <div className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <CheckCircle2 className="w-4 h-4" />
                 </div>
-                <span className="text-xs font-semibold uppercase tracking-wider">
-                  {feature}
-                </span>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-200">{item.title}</h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Right Side: Form */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 z-10">
-        <div
-          className="w-full max-w-sm animate-fade-in"
-          style={{ animationDelay: "0.2s" }}
-        >
-          <div className="md:hidden text-center mb-6">
-            <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 mb-3">
-              <HiSparkles className="w-5 h-5 text-primary animate-pulse-soft" />
-            </div>
-            <h2 className="headline-md text-on-surface">Create Account</h2>
+          <div className="flex items-center gap-2 text-xs text-slate-400">
+            <Shield className="w-4 h-4 text-indigo-400" />
+            <span>100% Secure &amp; Confidential. Your resume data is never sold or shared.</span>
           </div>
+        </div>
 
-          <Card className="premium-glass p-6 md:p-8">
-            <div className="hidden md:block mb-6">
-              <h2 className="headline-md text-on-surface mb-1">Get Started</h2>
-              <p className="text-xs text-on-surface-variant font-medium">
-                Join our ecosystem of AI-powered careers.
+        {/* Right Side: Register Card */}
+        <div className="lg:col-span-6 w-full max-w-md mx-auto animate-fade-in">
+          <Card className="p-7 sm:p-9 shadow-2xl">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white tracking-tight mb-2">
+                Create your account
+              </h2>
+              <p className="text-sm text-slate-400">
+                Start scanning and optimizing your resume in seconds.
               </p>
             </div>
 
@@ -124,9 +131,8 @@ const Register = () => {
                 value={name}
                 onChange={onChange}
                 required
-                placeholder="John Doe"
-                icon={FiUser}
-                className="border-white/10"
+                placeholder="Jane Doe"
+                icon={User}
               />
 
               <Input
@@ -136,50 +142,46 @@ const Register = () => {
                 value={email}
                 onChange={onChange}
                 required
-                placeholder="name@company.com"
-                icon={FiMail}
-                className="border-white/10"
+                placeholder="jane@example.com"
+                icon={Mail}
               />
 
               <Input
-                label="Secure Password"
+                label="Password"
                 type="password"
                 name="password"
                 value={password}
                 onChange={onChange}
                 required
-                minLength="6"
-                placeholder="Min. 6 characters"
-                icon={FiLock}
-                className="border-white/10"
+                placeholder="Minimum 6 characters"
+                icon={Lock}
+                helperText="Must be at least 6 characters long."
               />
 
               <Button
                 type="submit"
+                variant="primary"
+                size="lg"
                 loading={loading}
-                className="w-full h-14 text-xs font-black uppercase tracking-[0.25em] mt-4"
+                className="w-full h-12 text-sm uppercase tracking-wider font-bold mt-3"
               >
                 Create Account
-                <FiArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </form>
 
-            <div className="mt-8 text-center border-t border-white/5 pt-6">
-              <p className="text-sm text-on-surface-variant">
+            <div className="mt-8 pt-6 border-t border-white/[0.08] text-center">
+              <p className="text-sm text-slate-400">
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="text-secondary font-bold hover:text-primary transition-all uppercase tracking-widest text-[11px] ml-1"
+                  className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
-                  Sign In
+                  Sign in
                 </Link>
               </p>
             </div>
           </Card>
-
-          <p className="mt-6 text-center text-[9px] text-on-surface-variant/40 uppercase tracking-[0.3em] font-medium">
-            Protected by Cloud-Native Security Protocols
-          </p>
         </div>
       </div>
     </div>

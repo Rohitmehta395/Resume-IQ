@@ -2,8 +2,13 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
-import { FiMail, FiLock, FiArrowRight, FiCheck } from "react-icons/fi";
-import { HiSparkles } from "react-icons/hi2";
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+  CheckCircle2,
+  Sparkles,
+} from "lucide-react";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
@@ -25,71 +30,95 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
     setLoading(true);
     try {
       await login({ email, password });
-      toast.success("Welcome back!");
+      toast.success("Welcome back to ResumeIQ!");
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid credentials");
+      toast.error(err.response?.data?.message || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="h-[calc(100vh-5rem)] w-full flex flex-col md:flex-row bg-surface overflow-hidden relative">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-1/4 -left-20 w-80 h-80 ambient-blue-glow pointer-events-none opacity-50" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 ambient-violet-glow pointer-events-none opacity-40" />
-
-      {/* Left Side: Branding & Info */}
-      <div className="hidden md:flex flex-1 flex-col justify-center px-12 lg:px-24 z-10 animate-fade-in">
-        <div className="max-w-xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-8">
-            <HiSparkles className="w-4 h-4 text-primary" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">AI Career Intelligence</span>
+    <div className="min-h-[calc(100vh-4.5rem)] w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#080C14]">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        {/* Left Side: Product Value & Live ATS Teaser */}
+        <div className="hidden lg:flex lg:col-span-6 flex-col justify-center pr-6 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 w-fit mb-6">
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+              Next-Gen Career Intelligence
+            </span>
           </div>
-          
-          <h1 className="display-xl text-on-surface mb-6 leading-tight">
-            Optimize your <span className="text-primary">Professional</span> Trajectory.
+
+          <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-tight mb-6">
+            Land more interviews with <span className="text-indigo-400">precision ATS</span> scoring.
           </h1>
-          
-          <p className="body-lg text-on-surface-variant/80 mb-10 leading-relaxed">
-            Access your intelligent dashboard to analyze resumes, track applications, and unlock personalized career insights powered by advanced AI.
+
+          <p className="text-base text-slate-400 leading-relaxed mb-8">
+            Stop sending resumes into the black hole. Scan against real job descriptions, discover hidden keyword gaps, and get instant executive rewrites.
           </p>
 
-          <div className="space-y-4">
-            {[
-              "Real-time ATS Compatibility Analysis",
-              "AI-Powered Keyword Optimization",
-              "Smart Career Progression Insights"
-            ].map((feature, i) => (
-              <div key={i} className="flex items-center gap-3 text-on-surface-variant/70">
-                <div className="flex-shrink-0 w-5 h-5 rounded-full bg-tertiary/10 border border-tertiary/20 flex items-center justify-center">
-                  <FiCheck className="w-3 h-3 text-tertiary" />
-                </div>
-                <span className="text-sm font-medium">{feature}</span>
+          {/* Interactive Simulation Preview Card */}
+          <div className="p-5 rounded-2xl bg-[#0F172A] border border-white/[0.08] shadow-xl relative overflow-hidden mb-8">
+            <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]" />
+                <span className="text-xs font-mono font-bold text-slate-300">
+                  ATS_SCAN_TARGET // Senior Fullstack Engineer
+                </span>
               </div>
-            ))}
+              <span className="text-xs font-mono font-extrabold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
+                88% MATCH
+              </span>
+            </div>
+
+            <div className="space-y-2 text-xs font-mono">
+              <div className="flex justify-between text-slate-400">
+                <span>Keyword Density:</span>
+                <span className="text-indigo-300 font-semibold">94% Optimal</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Critical Hard Skills:</span>
+                <span className="text-emerald-400 font-semibold">12 Matched, 2 Missing</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Format Parser Compliance:</span>
+                <span className="text-sky-300 font-semibold">100% Clean Structure</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2.5 text-xs text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Instant AI Bullet Rewrites</span>
+            </div>
+            <div className="flex items-center gap-2.5 text-xs text-slate-300">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Bank-Grade Data Privacy</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Right Side: Form */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 z-10">
-        <div className="w-full max-w-sm animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="md:hidden text-center mb-6">
-            <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 mb-3">
-              <HiSparkles className="w-5 h-5 text-primary animate-pulse-soft" />
-            </div>
-            <h2 className="headline-md text-on-surface">Welcome Back</h2>
-          </div>
-
-          <Card className="premium-glass p-6 md:p-8">
-            <div className="hidden md:block mb-6">
-              <h2 className="headline-md text-on-surface mb-1">Sign In</h2>
-              <p className="text-xs text-on-surface-variant font-medium">Enter your credentials to continue.</p>
+        {/* Right Side: Clean Login Card */}
+        <div className="lg:col-span-6 w-full max-w-md mx-auto animate-fade-in">
+          <Card className="p-7 sm:p-9 shadow-2xl">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white tracking-tight mb-2">
+                Sign in to ResumeIQ
+              </h2>
+              <p className="text-sm text-slate-400">
+                Access your dashboard, saved reports, and ATS scans.
+              </p>
             </div>
 
             <form onSubmit={onSubmit} className="space-y-5">
@@ -100,11 +129,10 @@ const Login = () => {
                 value={email}
                 onChange={onChange}
                 required
-                placeholder="name@company.com"
-                icon={FiMail}
-                className="border-white/10"
+                placeholder="you@domain.com"
+                icon={Mail}
               />
-              
+
               <Input
                 label="Password"
                 type="password"
@@ -113,36 +141,33 @@ const Login = () => {
                 onChange={onChange}
                 required
                 placeholder="••••••••••••"
-                icon={FiLock}
-                className="border-white/10"
+                icon={Lock}
               />
 
               <Button
                 type="submit"
+                variant="primary"
+                size="lg"
                 loading={loading}
-                className="w-full h-14 text-xs font-black uppercase tracking-[0.25em] mt-4"
+                className="w-full h-12 text-sm uppercase tracking-wider font-bold mt-2"
               >
                 Sign In
-                <FiArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </form>
 
-            <div className="mt-8 text-center border-t border-white/5 pt-6">
-              <p className="text-sm text-on-surface-variant">
-                New to the platform?{" "}
+            <div className="mt-8 pt-6 border-t border-white/[0.08] text-center">
+              <p className="text-sm text-slate-400">
+                Don't have an account?{" "}
                 <Link
                   to="/register"
-                  className="text-secondary font-bold hover:text-primary transition-all uppercase tracking-widest text-[11px] ml-1"
+                  className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
-                  Create Account
+                  Create an account
                 </Link>
               </p>
             </div>
           </Card>
-          
-          <p className="mt-6 text-center text-[9px] text-on-surface-variant/40 uppercase tracking-[0.3em] font-medium">
-            © 2026 ResumeMatch AI Intelligence
-          </p>
         </div>
       </div>
     </div>

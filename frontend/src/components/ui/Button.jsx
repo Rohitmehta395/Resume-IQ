@@ -1,5 +1,3 @@
-import React from "react";
-
 const Button = ({
   children,
   variant = "primary",
@@ -7,41 +5,42 @@ const Button = ({
   className = "",
   loading = false,
   icon: Icon,
+  iconPosition = "left",
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium transition-all duration-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080C14] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none";
 
   const variants = {
     primary:
-      "bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20 focus:ring-primary",
+      "bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-md shadow-indigo-600/25 hover:shadow-indigo-600/40 focus-visible:ring-indigo-500",
     secondary:
-      "glass-card text-on-surface border-primary/20 hover:bg-white/10 hover:border-primary/40 focus:ring-primary/30",
+      "bg-[#162032] hover:bg-[#1E293B] text-slate-200 hover:text-white border border-white/[0.08] hover:border-white/[0.15] focus-visible:ring-slate-400",
     outline:
-      "bg-transparent text-primary border border-primary/50 hover:bg-primary/10 focus:ring-primary",
+      "bg-transparent text-indigo-400 hover:text-indigo-300 border border-indigo-500/40 hover:border-indigo-500/70 hover:bg-indigo-500/10 focus-visible:ring-indigo-500",
     ghost:
-      "bg-transparent text-secondary hover:bg-secondary/10 focus:ring-secondary/20",
+      "bg-transparent text-slate-300 hover:text-white hover:bg-white/[0.06] focus-visible:ring-slate-400",
     danger:
-      "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 focus:ring-red-500",
+      "bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 border border-rose-500/30 hover:border-rose-500/50 focus-visible:ring-rose-500",
     success:
-      "bg-tertiary/10 text-tertiary border border-tertiary/20 hover:bg-tertiary/20 focus:ring-tertiary",
+      "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 border border-emerald-500/30 hover:border-emerald-500/50 focus-visible:ring-emerald-500",
   };
 
   const sizes = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-5 py-2.5 text-base",
-    lg: "px-7 py-3.5 text-lg",
+    sm: "px-3.5 py-1.5 text-xs gap-1.5",
+    md: "px-5 py-2.5 text-sm gap-2",
+    lg: "px-6 py-3.5 text-base gap-2.5",
   };
 
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`${baseStyles} ${variants[variant] || variants.primary} ${sizes[size] || sizes.md} ${className}`}
       disabled={loading || props.disabled}
       {...props}
     >
       {loading ? (
         <svg
-          className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
+          className="animate-spin h-4 w-4 text-current"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -60,10 +59,15 @@ const Button = ({
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
           ></path>
         </svg>
-      ) : Icon ? (
-        <Icon className={`${children ? "mr-2" : ""} h-5 w-5`} />
+      ) : Icon && iconPosition === "left" ? (
+        <Icon className="h-4 w-4 shrink-0" />
       ) : null}
+      
       {children}
+
+      {!loading && Icon && iconPosition === "right" && (
+        <Icon className="h-4 w-4 shrink-0" />
+      )}
     </button>
   );
 };

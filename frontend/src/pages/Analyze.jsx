@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FileText,
-  Building2,
   Upload,
   Sparkles,
   Target,
@@ -12,25 +11,52 @@ import {
   ChevronRight,
   X,
   Briefcase,
+  FileCheck,
+  Building2,
+  Copy,
 } from "lucide-react";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import Input from "../components/ui/Input";
 import Textarea from "../components/ui/Textarea";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import Badge from "../components/ui/Badge";
 
-/* ─── Step indicator ─────────────────────────────────────────────── */
-const Step = ({ number, label, done }) => (
-  <div className="flex items-center gap-3">
+const SAMPLE_JOB_DESCRIPTION = `We are seeking a Senior Fullstack Engineer to lead our Core Platform team. In this role, you will architect, build, and scale high-throughput web applications handling millions of daily requests.
+
+Key Responsibilities:
+• Design and maintain robust microservices using Node.js, TypeScript, and Go.
+• Build responsive, accessible, and performant user interfaces with React, Next.js, and Tailwind CSS.
+• Optimize PostgreSQL and Redis database performance, indexing, and schema design.
+• Implement automated CI/CD deployment pipelines on AWS and Docker container environments.
+• Partner with product managers and designers to deliver customer-facing capabilities with high test coverage.
+
+Requirements:
+• 4+ years of professional software engineering experience.
+• Strong proficiency in React, TypeScript, Node.js, and RESTful / GraphQL API architectures.
+• Solid background in distributed systems, asynchronous queues, and cloud infrastructure.
+• Experience with automated testing frameworks (Jest, Playwright) and performance monitoring.
+• Excellent communication skills and a data-driven approach to technical decision-making.`;
+
+const StepItem = ({ number, label, done, active }) => (
+  <div className="flex items-center gap-2.5">
     <div
-      className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black transition-all ${
+      className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-mono font-bold transition-all ${
         done
-          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-          : "bg-primary/15 text-primary border border-primary/25"
+          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+          : active
+          ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+          : "bg-white/[0.04] text-slate-400 border border-white/[0.08]"
       }`}
     >
-      {done ? <CheckCircle2 className="w-4 h-4" /> : number}
+      {done ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : number}
     </div>
-    <span className="text-sm font-semibold text-on-surface-variant/60">
+    <span
+      className={`text-xs font-semibold ${
+        active ? "text-white" : done ? "text-slate-300" : "text-slate-400"
+      }`}
+    >
       {label}
     </span>
   </div>
@@ -46,10 +72,11 @@ const Analyze = () => {
   });
   const [file, setFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [analysisStep, setAnalysisStep] = useState(0);
   const [dragOver, setDragOver] = useState(false);
 
-  const jdWordCount = formData.jobDescription.trim()
-    ? formData.jobDescription.trim().split(/\s+/).length
+  const jdWords = formData.jobDescription.trim()
+    ? formData.jobDescription.trim().split(/\s+/).filter(Boolean).length
     : 0;
 
   const handleInputChange = (e) =>
@@ -59,11 +86,11 @@ const Analyze = () => {
     const f = e.target.files[0];
     if (!f) return;
     if (f.size > 5 * 1024 * 1024) {
-      toast.error("File must be under 5MB");
+      toast.error("File size must be under 5MB.");
       return;
     }
     setFile(f);
-    toast.success("Resume uploaded");
+    toast.success("Resume uploaded successfully.");
   };
 
   const handleDrop = (e) => {
@@ -72,34 +99,45 @@ const Analyze = () => {
     const f = e.dataTransfer.files[0];
     if (!f) return;
     if (f.size > 5 * 1024 * 1024) {
-      toast.error("File must be under 5MB");
+      toast.error("File size must be under 5MB.");
       return;
     }
     setFile(f);
-    toast.success("Resume uploaded");
+    toast.success("Resume uploaded successfully.");
+  };
+
+  const loadSampleJD = () => {
+    setFormData({
+      jobTitle: "Senior Fullstack Engineer",
+      companyName: "Stripe",
+      jobDescription: SAMPLE_JOB_DESCRIPTION,
+    });
+    toast.success("Sample Job Description loaded.");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (analyzing) return;
+
     if (!file) {
-      toast.error("Please upload your resume");
+      toast.error("Please upload your resume file (PDF or DOCX).");
       return;
     }
-    if (!formData.jobTitle) {
-      toast.error("Job title is required");
+    if (!formData.jobTitle.trim()) {
+      toast.error("Please enter a target job title.");
       return;
     }
-    if (
-      !formData.jobDescription ||
-      formData.jobDescription.trim().length < 50
-    ) {
-      toast.error("Job description is too short");
+    if (!formData.jobDescription.trim() || jdWords < 50) {
+      toast.error("Job description must contain at least 50 words for accurate ATS parsing.");
       return;
     }
 
     setAnalyzing(true);
-    const tid = toast.loading("Analyzing your resume…");
+    setAnalysisStep(1);
+
+    const stepInterval = setInterval(() => {
+      setAnalysisStep((prev) => (prev < 3 ? prev + 1 : prev));
+    }, 2500);
 
     const fd = new FormData();
     fd.append("resume", file);
@@ -111,314 +149,345 @@ const Analyze = () => {
       const res = await api.post("/checks/analyze", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("Analysis complete!", { id: tid });
-      setTimeout(() => navigate(`/report?id=${res.data.data.id}`), 1000);
+      clearInterval(stepInterval);
+      setAnalysisStep(3);
+      toast.success("ATS Analysis completed!");
+      setTimeout(() => {
+        navigate(`/report?id=${res.data.data.id}`);
+      }, 800);
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Analysis failed. Try again.",
-        { id: tid },
-      );
-    } finally {
+      clearInterval(stepInterval);
       setAnalyzing(false);
+      setAnalysisStep(0);
+      toast.error(
+        err.response?.data?.message || "Analysis failed. Please check your inputs and try again."
+      );
     }
   };
 
   const isStep1Done = !!file;
-  const isStep2Done = !!formData.jobTitle;
-  const isStep3Done = jdWordCount >= 50;
+  const isStep2Done = !!formData.jobTitle.trim();
+  const isStep3Done = jdWords >= 50;
 
   return (
-    <div className="min-h-screen bg-surface">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
-        {/* ══ PAGE HEADER ══ */}
-        <div className="mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
-            AI Resume Analyzer
-          </p>
-          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-on-surface leading-none mb-3">
-            Analyze Your{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-              Career Match
-            </span>
-          </h1>
-          <p className="text-base text-on-surface-variant max-w-xl leading-relaxed">
-            Upload your resume and paste a job description. Our AI will score
-            your match, surface missing skills, and give you concrete
-            improvements.
-          </p>
-        </div>
-
-        {/* ══ STEP TRACKER ══ */}
-        <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-10 p-5 rounded-2xl border border-white/[0.07] bg-white/[0.02]">
-          <Step number="01" label="Upload Resume" done={isStep1Done} />
-          <ChevronRight className="w-4 h-4 text-on-surface-variant/20 hidden sm:block" />
-          <Step number="02" label="Job Details" done={isStep2Done} />
-          <ChevronRight className="w-4 h-4 text-on-surface-variant/20 hidden sm:block" />
-          <Step number="03" label="Job Description" done={isStep3Done} />
-          <ChevronRight className="w-4 h-4 text-on-surface-variant/20 hidden sm:block" />
-          <div className="flex items-center gap-3 ml-auto">
-            <div className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
-              <Target className="w-4 h-4 text-on-surface-variant/40" />
-            </div>
-            <span className="text-sm font-semibold text-on-surface-variant/40">
-              Generate Report
+    <div className="space-y-8 animate-fade-in relative">
+      {/* ══ HEADER ══ */}
+      <div className="pb-6 border-b border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_8px_#6366F1]" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+              Heuristic ATS Audit Studio
             </span>
           </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight font-sans">
+            Scan &amp; Optimize Your Resume
+          </h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Upload your resume, add your target job posting, and receive a multi-vector ATS compliance audit.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* ══ LEFT COLUMN ══ */}
-            <div className="lg:col-span-4 space-y-5">
-              {/* Upload zone */}
-              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden">
-                <div className="px-6 pt-6 pb-3 border-b border-white/[0.05]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center">
-                      <Upload className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-on-surface leading-none mb-0.5">
-                        Resume Upload
-                      </h3>
-                      <p className="text-xs text-on-surface-variant/50">
-                        PDF or DOCX, max 5 MB
-                      </p>
-                    </div>
+        <button
+          type="button"
+          onClick={loadSampleJD}
+          className="self-start md:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-xs font-mono font-semibold text-slate-300 border border-white/[0.08] transition-colors cursor-pointer"
+        >
+          <Copy className="w-3.5 h-3.5 text-indigo-400" />
+          Load Sample Posting
+        </button>
+      </div>
+
+      {/* ══ STEP PROGRESSION BAR ══ */}
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6 p-4 rounded-2xl bg-[#0F172A] border border-white/[0.08]">
+        <StepItem number="1" label="Upload Resume" done={isStep1Done} active={!isStep1Done} />
+        <ChevronRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+        <StepItem number="2" label="Role Details" done={isStep2Done} active={isStep1Done && !isStep2Done} />
+        <ChevronRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+        <StepItem number="3" label="Job Description" done={isStep3Done} active={isStep2Done && !isStep3Done} />
+        <ChevronRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+        <StepItem number="4" label="Generate Report" done={false} active={isStep1Done && isStep2Done && isStep3Done} />
+      </div>
+
+      {/* ══ MAIN WORKSPACE FORM ══ */}
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* ── LEFT PANEL: UPLOAD & ROLE METADATA (Span 5) ── */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* 1. Resume File Dropzone */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                    <Upload className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Resume Document</h3>
+                    <p className="text-xs text-slate-400">PDF or DOCX (Max 5MB)</p>
                   </div>
                 </div>
 
-                <div className="p-5">
+                {file && (
+                  <Badge variant="emerald" size="sm">
+                    Ready
+                  </Badge>
+                )}
+              </div>
+
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOver(true);
+                }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleDrop}
+                className={`relative border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-200 ${
+                  file
+                    ? "border-emerald-500/40 bg-emerald-500/[0.04]"
+                    : dragOver
+                    ? "border-indigo-500 bg-indigo-500/[0.08]"
+                    : "border-white/[0.1] hover:border-indigo-500/40 bg-[#090D16]"
+                }`}
+              >
+                <input
+                  type="file"
+                  id="resume-file-input"
+                  onChange={handleFileChange}
+                  accept=".pdf,.docx"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+
+                {file ? (
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-3">
+                      <FileCheck className="w-6 h-6" />
+                    </div>
+                    <span className="text-sm font-bold text-emerald-300 max-w-xs truncate">
+                      {file.name}
+                    </span>
+                    <span className="text-xs font-mono text-slate-400 mt-0.5">
+                      {(file.size / (1024 * 1024)).toFixed(2)} MB • Verified Format
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setFile(null);
+                      }}
+                      className="relative z-20 mt-3 inline-flex items-center gap-1 text-xs text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" /> Remove file
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center py-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 flex items-center justify-center mb-3">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <span className="text-sm font-bold text-slate-200">
+                      Drop your resume here
+                    </span>
+                    <span className="text-xs text-slate-400 mt-1">
+                      or click to browse from device
+                    </span>
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* 2. Target Job Metadata */}
+            <Card className="p-6 space-y-4">
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
+                  <Briefcase className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">Target Position</h3>
+                  <p className="text-xs text-slate-400">Specify the role and organization</p>
+                </div>
+              </div>
+
+              <Input
+                label="Target Job Title"
+                name="jobTitle"
+                value={formData.jobTitle}
+                onChange={handleInputChange}
+                required
+                placeholder="e.g. Senior Frontend Engineer"
+                icon={Briefcase}
+              />
+
+              <Input
+                label="Company Name (Optional)"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleInputChange}
+                placeholder="e.g. Google, Stripe, or Stealth Startup"
+                icon={Building2}
+              />
+            </Card>
+
+            {/* 3. ATS Screening Rules Advice */}
+            <Card className="p-5 bg-gradient-to-br from-[#0F172A] to-[#162032] border-indigo-500/20">
+              <div className="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-3">
+                <Zap className="w-4 h-4" />
+                <span>ATS Screening Rules</span>
+              </div>
+              <ul className="space-y-2 text-xs text-slate-300 leading-relaxed">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>Use standard section titles: Experience, Skills, Education.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>Avoid multi-column tables or text boxes; single column parses 100% reliably.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>Match exact keyword syntax used in the job description.</span>
+                </li>
+              </ul>
+            </Card>
+          </div>
+
+          {/* ── RIGHT PANEL: JOB DESCRIPTION & TRIGGER (Span 7) ── */}
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+            <Card className="p-6 flex-1 flex flex-col">
+              <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Full Job Description</h3>
+                    <p className="text-xs text-slate-400">
+                      Paste the complete posting text for deep semantic extraction
+                    </p>
+                  </div>
+                </div>
+
+                {/* Word Count Meter */}
+                <div className="flex items-center gap-2">
                   <div
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setDragOver(true);
-                    }}
-                    onDragLeave={() => setDragOver(false)}
-                    onDrop={handleDrop}
-                    className={`relative rounded-xl border-2 border-dashed transition-all duration-300 ${
-                      file
-                        ? "border-emerald-500/30 bg-emerald-500/[0.05]"
-                        : dragOver
-                          ? "border-primary/50 bg-primary/[0.06]"
-                          : "border-white/[0.08] hover:border-primary/30 hover:bg-primary/[0.03]"
+                    className={`px-3 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 ${
+                      jdWords >= 50
+                        ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/25"
+                        : jdWords > 0
+                        ? "bg-amber-500/10 text-amber-300 border-amber-500/25"
+                        : "bg-white/[0.04] text-slate-400 border-white/[0.08]"
                     }`}
                   >
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      accept=".pdf,.docx"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                    />
-                    <div className="p-8 text-center">
-                      {file ? (
-                        <>
-                          <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center">
-                            <FileText className="w-6 h-6 text-emerald-400" />
-                          </div>
-                          <p className="text-sm font-bold text-emerald-400 truncate mb-1 px-2">
-                            {file.name}
-                          </p>
-                          <p className="text-xs text-emerald-400/50 font-semibold">
-                            Ready to analyze
-                          </p>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setFile(null);
-                            }}
-                            className="relative z-20 mt-4 flex items-center gap-1.5 mx-auto text-xs font-semibold text-on-surface-variant/40 hover:text-red-400 transition-colors"
-                          >
-                            <X className="w-3.5 h-3.5" /> Remove
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-white/[0.05] flex items-center justify-center">
-                            <Upload className="w-6 h-6 text-on-surface-variant/40" />
-                          </div>
-                          <p className="text-sm font-bold text-on-surface mb-1">
-                            Drop your resume here
-                          </p>
-                          <p className="text-xs text-on-surface-variant/40 font-semibold">
-                            or click to browse
-                          </p>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Job details */}
-              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden">
-                <div className="px-6 pt-6 pb-3 border-b border-white/[0.05]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center">
-                      <Briefcase className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-on-surface leading-none mb-0.5">
-                        Job Details
-                      </h3>
-                      <p className="text-xs text-on-surface-variant/50">
-                        Role &amp; company info
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-5 space-y-4">
-                  <Input
-                    label="Job Title"
-                    type="text"
-                    name="jobTitle"
-                    value={formData.jobTitle}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Senior Product Designer"
-                    required
-                  />
-                  <Input
-                    label="Company Name"
-                    type="text"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Google  (optional)"
-                  />
-                </div>
-              </div>
-
-              {/* Tips */}
-              <div className="rounded-2xl border border-primary/15 bg-primary/[0.05] p-5 relative overflow-hidden">
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-primary/10 blur-2xl rounded-full -mr-16 -mb-16 pointer-events-none" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-xl bg-primary/20 border border-primary/20 flex items-center justify-center">
-                      <Zap className="w-4 h-4 text-primary" />
-                    </div>
-                    <h4 className="text-sm font-bold text-on-surface">
-                      Quick Tips
-                    </h4>
-                  </div>
-                  <ul className="space-y-3">
-                    {[
-                      "Use PDF for best formatting results",
-                      "Paste the full job description",
-                      "Match skill names exactly as listed",
-                    ].map((tip, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-primary/60 mt-0.5 shrink-0" />
-                        <span className="text-sm text-on-surface-variant leading-relaxed">
-                          {tip}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* ══ RIGHT COLUMN ══ */}
-            <div className="lg:col-span-8 space-y-5">
-              {/* Job description panel */}
-              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden flex flex-col">
-                <div className="px-6 pt-6 pb-3 border-b border-white/[0.05] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center">
-                      <FileText className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-on-surface leading-none mb-0.5">
-                        Job Description
-                      </h3>
-                      <p className="text-xs text-on-surface-variant/50">
-                        Paste the full posting
-                      </p>
-                    </div>
-                  </div>
-                  {/* word count pill */}
-                  <div
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
-                      jdWordCount === 0
-                        ? "bg-white/[0.03] border-white/[0.07] text-on-surface-variant/30"
-                        : jdWordCount < 50
-                          ? "bg-red-500/10 border-red-500/20 text-red-400"
-                          : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                    }`}
-                  >
-                    {jdWordCount < 50 && jdWordCount > 0 && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
-                    )}
-                    {jdWordCount >= 50 && (
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    )}
-                    {jdWordCount} {jdWordCount === 1 ? "word" : "words"}
-                    {jdWordCount > 0 && jdWordCount < 50 && (
-                      <span className="text-red-400/60 font-semibold">
-                        {" "}
-                        · need {50 - jdWordCount} more
+                    <span>{jdWords} words</span>
+                    {jdWords < 50 && (
+                      <span className="text-[10px] text-amber-400 font-sans font-medium">
+                        (min 50)
                       </span>
                     )}
                   </div>
                 </div>
-
-                <div className="p-5">
-                  <Textarea
-                    name="jobDescription"
-                    value={formData.jobDescription}
-                    onChange={handleInputChange}
-                    rows={16}
-                    placeholder="Paste the full job description here. Our AI performs best with complete postings that include responsibilities, qualifications, and required skills…"
-                    required
-                  />
-                </div>
               </div>
 
-              {/* CTA */}
-              <button
-                type="submit"
-                disabled={analyzing}
-                className={`w-full h-16 rounded-2xl text-base font-bold uppercase  transition-all duration-300 flex cursor-pointer items-center justify-center gap-3 shadow-xl ${
-                  analyzing
-                    ? "bg-primary/50 text-white/60 cursor-not-allowed"
-                    : "bg-primary text-white hover:bg-primary/90 active:scale-[0.99] shadow-primary/25 hover:shadow-primary/40"
-                }`}
-              >
-                {analyzing ? (
-                  <>
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Analyzing Resume…
-                  </>
-                ) : (
-                  <>
-                    <Target className="w-5 h-5" />
-                    Generate AI Report
-                    <ChevronRight className="w-5 h-5 opacity-60" />
-                  </>
-                )}
-              </button>
+              {/* Textarea */}
+              <div className="flex-1 flex flex-col">
+                <Textarea
+                  name="jobDescription"
+                  value={formData.jobDescription}
+                  onChange={handleInputChange}
+                  rows={14}
+                  placeholder="Paste the full job description here, including responsibilities, required qualifications, tech stack, and preferred skills…"
+                  required
+                  className="flex-1"
+                />
+              </div>
 
-              {/* Privacy notice */}
-              <div className="flex items-start gap-4 p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
-                <div className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.07] flex items-center justify-center shrink-0">
-                  <Lock className="w-4 h-4 text-on-surface-variant/50" />
+              {/* Helper Bar */}
+              <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
+                <div className="flex items-center gap-2">
+                  <Lock className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Data is processed in an encrypted sandbox.</span>
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-on-surface mb-1">
-                    Privacy First
-                  </h4>
-                  <p className="text-sm text-on-surface-variant/60 leading-relaxed">
-                    Your resume and job data are encrypted end-to-end and never
-                    used for model training or shared with third parties.
-                  </p>
-                </div>
+                <span>TF-IDF Semantic Match Model</span>
+              </div>
+            </Card>
+
+            {/* Launch Button */}
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={analyzing || !file || !formData.jobTitle || jdWords < 50}
+              className="w-full h-14 text-sm uppercase tracking-wider font-bold shadow-xl shadow-indigo-600/25"
+            >
+              <Target className="w-5 h-5 mr-1" />
+              Generate Comprehensive ATS Report
+            </Button>
+          </div>
+        </div>
+      </form>
+
+      {/* ══ ACTIVE ANALYSIS MODAL / OVERLAY ══ */}
+      {analyzing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <Card className="w-full max-w-md p-8 text-center bg-[#0F172A] border-indigo-500/40 shadow-2xl relative overflow-hidden">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mx-auto mb-6">
+              <Sparkles className="w-8 h-8 animate-pulse" />
+            </div>
+
+            <h3 className="text-xl font-extrabold text-white tracking-tight mb-2">
+              Auditing ATS Compatibility
+            </h3>
+            <p className="text-sm text-slate-400 mb-6">
+              Comparing resume experience against job requirements…
+            </p>
+
+            {/* Progress Steps */}
+            <div className="space-y-3 text-left p-4 rounded-xl bg-[#090D16] border border-white/[0.06] font-mono text-xs mb-6">
+              <div className="flex items-center gap-2.5">
+                {analysisStep >= 1 ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                ) : (
+                  <div className="w-4 h-4 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin shrink-0" />
+                )}
+                <span className={analysisStep >= 1 ? "text-slate-200" : "text-indigo-300"}>
+                  Extracting sections, skills, &amp; metrics…
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                {analysisStep >= 2 ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                ) : analysisStep === 1 ? (
+                  <div className="w-4 h-4 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin shrink-0" />
+                ) : (
+                  <div className="w-4 h-4 rounded-full bg-white/[0.08] shrink-0" />
+                )}
+                <span className={analysisStep >= 2 ? "text-slate-200" : "text-slate-400"}>
+                  Calculating heuristic match scores…
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                {analysisStep >= 3 ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                ) : analysisStep === 2 ? (
+                  <div className="w-4 h-4 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin shrink-0" />
+                ) : (
+                  <div className="w-4 h-4 rounded-full bg-white/[0.08] shrink-0" />
+                )}
+                <span className={analysisStep >= 3 ? "text-slate-200" : "text-slate-400"}>
+                  Generating Google X-Y-Z rewrites…
+                </span>
               </div>
             </div>
-          </div>
-        </form>
-      </div>
+
+            <div className="flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]" />
+              <span>Analyzing in secure sandbox</span>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

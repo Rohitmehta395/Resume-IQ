@@ -1,29 +1,68 @@
-import React from 'react';
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
-const Input = ({ label, error, icon: Icon, className = '', ...props }) => {
+const Input = ({
+  label,
+  error,
+  helperText,
+  icon: Icon,
+  type = "text",
+  className = "",
+  id,
+  ...props
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPassword = type === "password";
+  const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+  const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
+
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label className="block text-sm font-semibold text-on-surface-variant mb-2 ml-1 uppercase tracking-wider">
+        <label
+          htmlFor={inputId}
+          className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider"
+        >
           {label}
         </label>
       )}
       <div className="relative group">
         {Icon && (
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary transition-colors">
-            <Icon className="w-5 h-5" />
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-400 transition-colors pointer-events-none">
+            <Icon className="w-4 h-4" />
           </div>
         )}
         <input
-          className={`w-full ${Icon ? 'pl-12' : 'px-4'} py-3 bg-transparent border ${
-            error 
-              ? 'border-red-500/50 focus:ring-red-500/20' 
-              : 'border-white/10 focus:border-primary/50 hover:border-white/20'
-          } rounded-xl text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:ring-4 transition-all duration-300`}
+          id={inputId}
+          type={inputType}
+          className={`w-full ${Icon ? "pl-10" : "px-4"} ${
+            isPassword ? "pr-10" : "pr-4"
+          } py-2.5 bg-[#090D16] border ${
+            error
+              ? "border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/20"
+              : "border-white/[0.09] hover:border-white/[0.18] focus:border-indigo-500/70 focus:ring-indigo-500/20"
+          } rounded-xl text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-4 transition-all duration-200`}
           {...props}
         />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        )}
       </div>
-      {error && <p className="mt-2 text-xs font-medium text-red-500 ml-1">{error}</p>}
+      {error && (
+        <p className="mt-1.5 text-xs font-semibold text-rose-400 flex items-center gap-1">
+          {error}
+        </p>
+      )}
+      {helperText && !error && (
+        <p className="mt-1.5 text-xs text-slate-400">{helperText}</p>
+      )}
     </div>
   );
 };

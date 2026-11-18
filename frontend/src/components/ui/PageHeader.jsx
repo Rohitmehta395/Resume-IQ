@@ -1,13 +1,34 @@
-import React from 'react';
-
-const PageHeader = ({ title, subtitle, actions }) => {
+const PageHeader = ({
+  badge,
+  title,
+  subtitle,
+  actions,
+  className = "",
+}) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12 gap-6">
+    <div
+      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-white/[0.08] mb-8 ${className}`}
+    >
       <div>
-        <h1 className="headline-lg text-on-surface">{title}</h1>
-        {subtitle && <p className="mt-2 text-on-surface-variant body-md">{subtitle}</p>}
+        {badge && (
+          <div className="mb-2">
+            {badge}
+          </div>
+        )}
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight font-sans">
+          {title}
+        </h1>
+        {subtitle && (
+          <p className="mt-1.5 text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
+            {subtitle}
+          </p>
+        )}
       </div>
-      {actions && <div className="flex items-center gap-4">{actions}</div>}
+      {actions && (
+        <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
+          {actions}
+        </div>
+      )}
     </div>
   );
 };

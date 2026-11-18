@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -16,7 +15,7 @@ const Layout = ({ children }) => {
   const isHomePage = location.pathname === '/';
   
   return (
-    <div className={`min-h-screen bg-surface ${isHomePage ? '' : 'py-12'}`}>
+    <div className={`min-h-screen bg-[#080C14] text-[#F8FAFC] ${isHomePage ? '' : 'py-8 md:py-10'}`}>
       <div className={isHomePage ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
         {children}
       </div>
@@ -28,17 +27,19 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-surface selection:bg-primary/30 selection:text-white">
+        <div className="min-h-screen bg-[#080C14] text-[#F8FAFC]">
           <Toaster 
             position="top-right" 
             toastOptions={{
               duration: 4000,
               style: {
-                borderRadius: '16px',
-                background: '#171f33',
-                color: '#DAE2FD',
+                borderRadius: '12px',
+                background: '#0F172A',
+                color: '#F8FAFC',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.4)',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
+                fontSize: '14px',
+                fontWeight: '500',
               },
             }} 
           />

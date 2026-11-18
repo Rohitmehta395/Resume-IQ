@@ -1,18 +1,28 @@
-import React from 'react';
-import Button from './Button';
+import Button from "./Button";
 
-const EmptyState = ({ icon: Icon, title, description, actionText, onAction }) => {
+const EmptyState = ({
+  icon: Icon,
+  title,
+  description,
+  actionText,
+  onAction,
+  actionIcon,
+}) => {
   return (
-    <div className="flex flex-col items-center justify-center p-12 text-center glass-card rounded-[2rem] border-white/5 shadow-2xl">
+    <div className="flex flex-col items-center justify-center p-10 sm:p-14 text-center rounded-2xl border border-white/[0.08] bg-[#0F172A] shadow-xl">
       {Icon && (
-        <div className="p-5 bg-white/5 text-primary/60 rounded-2xl mb-6 backdrop-blur-sm border border-white/5">
-          <Icon className="h-10 w-10" />
+        <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mb-5 shadow-inner">
+          <Icon className="w-8 h-8" />
         </div>
       )}
-      <h3 className="text-2xl font-bold text-on-surface mb-3 tracking-tight">{title}</h3>
-      <p className="text-on-surface-variant/70 body-md max-w-sm mb-8">{description}</p>
+      <h3 className="text-xl font-bold text-white mb-2 tracking-tight">
+        {title}
+      </h3>
+      <p className="text-sm text-slate-400 max-w-md mb-6 leading-relaxed">
+        {description}
+      </p>
       {actionText && onAction && (
-        <Button onClick={onAction}>
+        <Button onClick={onAction} variant="primary" icon={actionIcon}>
           {actionText}
         </Button>
       )}

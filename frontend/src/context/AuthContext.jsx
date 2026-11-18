@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import api from '../api/axios';
 
 const AuthContext = createContext();
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
         try {
           const res = await api.get('auth/me');
           setUser(res.data.user);
-        } catch (err) {
+        } catch {
           localStorage.removeItem('token');
           delete api.defaults.headers.common['Authorization'];
           setUser(null);

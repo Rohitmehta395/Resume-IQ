@@ -1,76 +1,145 @@
-import React from "react";
-import { Target, Sparkles, BarChart3, Shield, Clock, Users } from "lucide-react";
+import {
+  Target,
+  Sparkles,
+  BarChart3,
+  FileSearch,
+} from "lucide-react";
 import Card from "../ui/Card";
+import Badge from "../ui/Badge";
 
 const Features = () => {
-  const features = [
-    {
-      icon: Target,
-      title: "ATS Simulation",
-      description: "Our proprietary algorithm mimics top-tier Applicant Tracking Systems to identify exactly why your resume might be filtered out.",
-      color: "violet"
-    },
-    {
-      icon: Sparkles,
-      title: "AI-Powered Rewrites",
-      description: "Receive specific, contextual suggestions to rewrite bullet points using high-impact action verbs and industry-specific keywords.",
-      color: "sky"
-    },
-    {
-      icon: BarChart3,
-      title: "Real-time Scoring",
-      description: "Track your optimization progress with a dynamic match score that updates as you refine your skills and experience descriptions.",
-      color: "green"
-    }
-  ];
-
-  const highlights = [
-    { icon: Shield, title: "Data Security", text: "Your professional data is encrypted and never shared with third parties." },
-    { icon: Clock, title: "Instant Feedback", text: "Get comprehensive ATS analysis and improvement tips in less than 30 seconds." },
-    { icon: Users, title: "Student Focused", text: "Specifically designed to help students transition from academia to industry." }
-  ];
-
   return (
-    <section className="py-24 px-4 bg-surface-variant/30 relative overflow-hidden">
+    <section id="features" className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-[#090D16] border-y border-white/[0.06]">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="label-sm text-primary mb-4">Core Capabilities</h2>
-          <h3 className="headline-lg text-on-surface mb-6">Built for the Modern Job Market</h3>
-          <p className="body-md text-on-surface-variant">
-            Stop guessing what recruiters want. Use advanced AI to align your experience with the exact requirements of your dream roles.
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <Badge variant="indigo" size="md" className="mb-4">
+            Engine Capabilities
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4 font-sans">
+            Engineered to beat every ATS filter.
+          </h2>
+          <p className="text-base sm:text-lg text-slate-400 leading-relaxed">
+            Applicant Tracking Systems use strict semantic parsing. Here is how ResumeIQ reverse-engineers recruiter algorithms to maximize your callback rate.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          {features.map((feature, idx) => (
-            <Card key={idx} hover className="p-8 group relative overflow-hidden border-white/5">
-              {/* Subtle background glow on hover */}
-              <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
-              
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-8 glass-card border-white/10 group-hover:scale-110 transition-transform duration-300`}>
-                <feature.icon className={`w-7 h-7 ${idx === 0 ? 'text-primary' : idx === 1 ? 'text-secondary' : 'text-tertiary'}`} />
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Card 1: ATS Screening Simulation (Span 7) */}
+          <Card hover className="md:col-span-7 flex flex-col justify-between p-8 relative overflow-hidden group">
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mb-6">
+                <Target className="w-6 h-6" />
               </div>
-              
-              <h4 className="headline-md text-on-surface mb-4">{feature.title}</h4>
-              <p className="body-md text-on-surface-variant leading-relaxed">
-                {feature.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 border-t border-white/5">
-          {highlights.map((item, idx) => (
-            <div key={idx} className="flex flex-col items-center md:items-start text-center md:text-left">
-              <div className="w-10 h-10 rounded-xl glass-card flex items-center justify-center mb-6 border-white/5">
-                <item.icon className="w-5 h-5 text-secondary" />
-              </div>
-              <h5 className="text-sm font-bold text-on-surface mb-2 tracking-wide uppercase">{item.title}</h5>
-              <p className="text-sm text-on-surface-variant leading-relaxed">
-                {item.text}
+              <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                Enterprise ATS Engine Simulation
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-lg">
+                Our parsing engine runs the exact heuristic and TF-IDF semantic rules applied by Workday, Taleo, Lever, and Greenhouse. Know immediately if your resume will be categorized or rejected.
               </p>
             </div>
-          ))}
+
+            <div className="p-4 rounded-xl bg-[#090D16] border border-white/[0.08] grid grid-cols-3 gap-3 text-center text-xs font-mono">
+              <div className="p-2.5 rounded-lg bg-white/[0.02]">
+                <span className="text-slate-400 block text-[10px] uppercase">Parser Check</span>
+                <span className="text-emerald-400 font-bold">100% OCR Clean</span>
+              </div>
+              <div className="p-2.5 rounded-lg bg-white/[0.02]">
+                <span className="text-slate-400 block text-[10px] uppercase">Heuristic Score</span>
+                <span className="text-indigo-300 font-bold">92.4 / 100</span>
+              </div>
+              <div className="p-2.5 rounded-lg bg-white/[0.02]">
+                <span className="text-slate-400 block text-[10px] uppercase">Format Trap</span>
+                <span className="text-sky-300 font-bold">0 Detected</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Card 2: AI Keyword Gap Analysis (Span 5) */}
+          <Card hover className="md:col-span-5 flex flex-col justify-between p-8 group">
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center mb-6">
+                <FileSearch className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                Keyword Gap Diagnostics
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Extracts required technical competencies, software proficiencies, and contextual verbs from the job description and tells you exactly what is missing.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-2 text-xs font-mono">
+                <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-semibold">
+                  ✓ TypeScript
+                </span>
+                <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-semibold">
+                  ✓ React.js
+                </span>
+                <span className="px-2.5 py-1 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 font-semibold">
+                  ✗ Docker Containerization
+                </span>
+                <span className="px-2.5 py-1 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 font-semibold">
+                  ✗ CI/CD Pipelines
+                </span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Card 3: Executive Bullet Point Rewriter (Span 5) */}
+          <Card hover className="md:col-span-5 flex flex-col justify-between p-8 group">
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-6">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                Contextual AI Bullet Rewrites
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                Applies the Google X-Y-Z formula: Accomplished [X], measured by [Y], by doing [Z]. Transforms passive job duties into quantifiable achievement bullets.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-[#090D16] border border-white/[0.08] text-xs text-slate-300 font-sans leading-relaxed">
+              <span className="text-[10px] font-mono text-indigo-400 font-bold uppercase block mb-1">
+                Suggested Replacement:
+              </span>
+              "Spearheaded database query indexing, cutting API response times by 42% across 250,000 monthly active users."
+            </div>
+          </Card>
+
+          {/* Card 4: Multi-dimensional Scoring (Span 7) */}
+          <Card hover className="md:col-span-7 flex flex-col justify-between p-8 group">
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mb-6">
+                <BarChart3 className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                6-Vector Performance Matrix
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-lg">
+                Never settle for a simple percentage. ResumeIQ evaluates 6 distinct vectors: Keyword Density, Hard Skills Parity, Experience Relevance, Formatting Compliance, Section Structure, and Contact Discoverability.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[
+                { name: "Keyword Density", score: "94%" },
+                { name: "Hard Skills", score: "88%" },
+                { name: "Experience Alignment", score: "82%" },
+                { name: "Parser Formatting", score: "100%" },
+                { name: "Header Structure", score: "96%" },
+                { name: "Action Verb Impact", score: "85%" },
+              ].map((m, i) => (
+                <div key={i} className="p-3 rounded-xl bg-[#090D16] border border-white/[0.06]">
+                  <span className="text-[11px] text-slate-400 block truncate">{m.name}</span>
+                  <span className="text-base font-extrabold text-white font-mono">{m.score}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
         </div>
       </div>
     </section>

@@ -1,9 +1,27 @@
-import React from "react";
+const Card = ({
+  children,
+  className = "",
+  hover = false,
+  padding = true,
+  elevation = "default",
+  ...props
+}) => {
+  const elevations = {
+    default: "bg-[#0F172A] border-white/[0.08]",
+    elevated: "bg-[#162032] border-white/[0.1]",
+    subtle: "bg-white/[0.02] border-white/[0.06]",
+  };
 
-const Card = ({ children, className = "", hover = false, padding = true }) => {
+  const hoverStyles = hover
+    ? "transition-all duration-300 hover:border-indigo-500/40 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/50"
+    : "";
+
   return (
     <div
-      className={`glass-card rounded-xl border border-white/5 shadow-premium ${hover ? "transition-all duration-300 hover:shadow-premium-hover hover:border-white/10 hover:-translate-y-1" : ""} ${padding ? "p-6" : ""} ${className}`}
+      className={`rounded-2xl border ${elevations[elevation] || elevations.default} ${hoverStyles} ${
+        padding ? "p-6 sm:p-7" : ""
+      } ${className}`}
+      {...props}
     >
       {children}
     </div>
