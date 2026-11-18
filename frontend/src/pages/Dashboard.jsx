@@ -45,7 +45,7 @@ const ScoreDial = ({ score, size = 56 }) => {
           cx={size / 2}
           cy={size / 2}
           r={r}
-          stroke="rgba(255, 255, 255, 0.08)"
+          className="stroke-slate-200 dark:stroke-white/[0.08]"
           strokeWidth="3.5"
           fill="none"
         />
@@ -75,16 +75,16 @@ const ScoreDial = ({ score, size = 56 }) => {
 /* ─── Score Bar Row ─────────────────────────────────────────────────── */
 const BreakdownMiniBar = ({ label, value, color }) => (
   <div className="flex items-center gap-3 text-xs font-mono">
-    <span className="text-slate-400 w-20 shrink-0 font-sans text-[11px] truncate">
+    <span className="text-slate-600 dark:text-slate-400 w-20 shrink-0 font-sans text-[11px] truncate">
       {label}
     </span>
-    <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+    <div className="flex-1 h-1.5 bg-slate-200 dark:bg-white/[0.06] rounded-full overflow-hidden">
       <div
         className="h-full rounded-full transition-all duration-500"
         style={{ width: `${value || 0}%`, backgroundColor: color }}
       />
     </div>
-    <span className="text-[11px] font-bold w-8 text-right text-slate-200">
+    <span className="text-[11px] font-bold w-8 text-right text-slate-800 dark:text-slate-200">
       {value || 0}%
     </span>
   </div>
@@ -139,7 +139,7 @@ const Dashboard = () => {
       return {
         label: "High Match",
         color: "emerald",
-        textColor: "text-emerald-400",
+        textColor: "text-emerald-600 dark:text-emerald-400",
         borderColor: "border-emerald-500/30",
         badge: "emerald",
       };
@@ -147,7 +147,7 @@ const Dashboard = () => {
       return {
         label: "Good Match",
         color: "indigo",
-        textColor: "text-indigo-400",
+        textColor: "text-indigo-600 dark:text-indigo-400",
         borderColor: "border-indigo-500/30",
         badge: "indigo",
       };
@@ -155,14 +155,14 @@ const Dashboard = () => {
       return {
         label: "Average",
         color: "sky",
-        textColor: "text-sky-400",
+        textColor: "text-sky-600 dark:text-sky-400",
         borderColor: "border-sky-500/30",
         badge: "sky",
       };
     return {
       label: "Needs Work",
       color: "rose",
-      textColor: "text-rose-400",
+      textColor: "text-rose-600 dark:text-rose-400",
       borderColor: "border-rose-500/30",
       badge: "rose",
     };
@@ -172,7 +172,7 @@ const Dashboard = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <LoadingSpinner size="lg" color="primary" />
-        <p className="text-xs font-mono uppercase tracking-widest text-slate-400">
+        <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400">
           Loading Candidate Dossiers…
         </p>
       </div>
@@ -232,18 +232,18 @@ const Dashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* ══ HEADER ══ */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-slate-200 dark:border-white/[0.08]">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]" />
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Candidate Command Center
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight font-sans">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
             ATS Performance Overview
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
             Track your optimization trajectory across every job application.
           </p>
         </div>
@@ -252,7 +252,7 @@ const Dashboard = () => {
           onClick={() => navigate("/analyze")}
           variant="primary"
           size="md"
-          className="self-start sm:self-auto gap-2"
+          className="self-start sm:self-auto gap-2 shadow-sm"
         >
           <Plus className="w-4 h-4" />
           Run New ATS Scan
@@ -298,25 +298,25 @@ const Dashboard = () => {
           <Card key={i} hover className="p-5 sm:p-6 relative overflow-hidden flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   {s.label}
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-300">
+                <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 dark:bg-white/[0.04] dark:border-white/[0.08] dark:text-slate-300 flex items-center justify-center">
                   <s.icon className="w-4 h-4" />
                 </div>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
+                <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
                   {s.value}
                 </span>
                 {s.unit && (
-                  <span className="text-lg font-bold text-slate-400">
+                  <span className="text-lg font-bold text-slate-500 dark:text-slate-400">
                     {s.unit}
                   </span>
                 )}
               </div>
             </div>
-            <p className="mt-3 text-xs text-slate-400 pt-3 border-t border-white/[0.06]">
+            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 pt-3 border-t border-slate-100 dark:border-white/[0.06]">
               {s.desc}
             </p>
           </Card>
@@ -325,19 +325,19 @@ const Dashboard = () => {
 
       {/* ══ LATEST AUDIT SHOWCASE (If reports exist) ══ */}
       {reports.length > 0 && reports[0]?.score?.breakdown && (
-        <Card className="p-6 sm:p-8 bg-gradient-to-r from-[#0F172A] via-[#162032] to-[#0F172A] border-white/[0.1] shadow-2xl relative overflow-hidden">
+        <Card className="p-6 sm:p-8 bg-gradient-to-r from-white via-indigo-50/30 to-white dark:from-[#0F172A] dark:via-[#162032] dark:to-[#0F172A] border-slate-200 dark:border-white/[0.1] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 relative z-10">
             {/* Left: Score & Latest Role */}
             <div className="flex items-center gap-6">
               <ScoreDial score={reports[0].score.overallScore} size={84} />
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-xs font-mono font-bold mb-1.5">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-500/20 text-xs font-mono font-bold mb-1.5">
                   LATEST AUDIT
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
                   {reports[0].jobTitle}
                 </h3>
-                <p className="text-sm text-slate-400 flex items-center gap-1.5 mt-0.5">
+                <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
                   <Building2 className="w-3.5 h-3.5 text-slate-400" />
                   {reports[0].companyName || "Target Employer"}
                 </p>
@@ -374,7 +374,7 @@ const Dashboard = () => {
                 variant="primary"
                 size="md"
                 onClick={() => navigate(`/report?id=${reports[0]._id}`)}
-                className="gap-2"
+                className="gap-2 shadow-sm"
               >
                 Inspect Report
                 <ArrowRight className="w-4 h-4" />
@@ -401,13 +401,13 @@ const Dashboard = () => {
               placeholder="Search by role or company…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#0F172A] border border-white/[0.08] hover:border-white/[0.15] focus:border-indigo-500 rounded-xl text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all font-sans"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#0F172A] border border-slate-300 dark:border-white/[0.08] hover:border-slate-400 dark:hover:border-white/[0.15] focus:border-indigo-600 dark:focus:border-indigo-500 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15 dark:focus:ring-indigo-500/20 transition-all font-sans"
             />
           </div>
         </div>
 
         {error && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm font-semibold">
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-300 text-sm font-semibold">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{error}</span>
           </div>
@@ -444,7 +444,7 @@ const Dashboard = () => {
                   key={report._id}
                   hover
                   padding={false}
-                  className="flex flex-col justify-between overflow-hidden group border-white/[0.08]"
+                  className="flex flex-col justify-between overflow-hidden group"
                 >
                   <div className="p-6 space-y-5">
                     {/* Header Row */}
@@ -454,12 +454,12 @@ const Dashboard = () => {
                           {meta.label}
                         </Badge>
                         <h3
-                          className="text-lg font-bold text-white truncate group-hover:text-indigo-400 transition-colors"
+                          className="text-lg font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
                           title={report.jobTitle}
                         >
                           {report.jobTitle}
                         </h3>
-                        <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1 truncate">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1 truncate">
                           <Building2 className="w-3.5 h-3.5 shrink-0" />
                           {report.companyName || "Confidential"}
                         </p>
@@ -469,7 +469,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* Breakdown bars */}
-                    <div className="space-y-2 py-3 border-y border-white/[0.06]">
+                    <div className="space-y-2 py-3 border-y border-slate-100 dark:border-white/[0.06]">
                       <BreakdownMiniBar
                         label="Keywords"
                         value={report.score?.breakdown?.keywordScore}
@@ -488,19 +488,19 @@ const Dashboard = () => {
                     </div>
 
                     {/* Date stamp */}
-                    <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono">
                       <span className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5" />
                         {new Date(report.createdAt).toLocaleDateString()}
                       </span>
-                      <span className="text-slate-400 font-sans">
-                        Score: <strong className="text-slate-200">{overall}%</strong>
+                      <span className="text-slate-500 dark:text-slate-400 font-sans">
+                        Score: <strong className="text-slate-800 dark:text-slate-200">{overall}%</strong>
                       </span>
                     </div>
                   </div>
 
                   {/* Footer Actions */}
-                  <div className="flex items-center gap-2 p-3.5 bg-[#090D16] border-t border-white/[0.06]">
+                  <div className="flex items-center gap-2 p-3.5 bg-slate-50 border-t border-slate-100 dark:bg-[#090D16] dark:border-white/[0.06] transition-colors">
                     <Button
                       variant="secondary"
                       size="sm"
@@ -513,7 +513,7 @@ const Dashboard = () => {
                     <button
                       type="button"
                       onClick={() => setDeleteTargetId(report._id)}
-                      className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-colors cursor-pointer"
+                      className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:text-rose-400 dark:hover:bg-rose-500/10 border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20 transition-colors cursor-pointer"
                       title="Delete Report"
                       aria-label="Delete report"
                     >

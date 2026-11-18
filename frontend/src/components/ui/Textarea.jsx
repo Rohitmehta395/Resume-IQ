@@ -14,7 +14,7 @@ const Textarea = ({
       {label && (
         <label
           htmlFor={textareaId}
-          className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider"
+          className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider"
         >
           {label}
         </label>
@@ -22,20 +22,20 @@ const Textarea = ({
       <textarea
         id={textareaId}
         rows={rows}
-        className={`w-full px-4 py-3 bg-[#090D16] border ${
+        className={`w-full px-4 py-3 bg-white dark:bg-[#090D16] border ${
           error
-            ? "border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/20"
-            : "border-white/[0.09] hover:border-white/[0.18] focus:border-indigo-500/70 focus:ring-indigo-500/20"
-        } rounded-xl text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-4 transition-all duration-200 resize-y leading-relaxed font-sans`}
+            ? "border-rose-400 dark:border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/20"
+            : "border-slate-300 hover:border-slate-400 dark:border-white/[0.09] dark:hover:border-white/[0.18] focus:border-indigo-600 dark:focus:border-indigo-500/70 focus:ring-indigo-500/15 dark:focus:ring-indigo-500/20"
+        } rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-4 transition-all duration-200 resize-y leading-relaxed font-sans`}
         {...props}
       />
       {error && (
-        <p className="mt-1.5 text-xs font-semibold text-rose-400">
+        <p className="mt-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">
           {error}
         </p>
       )}
       {helperText && !error && (
-        <p className="mt-1.5 text-xs text-slate-400">{helperText}</p>
+        <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{helperText}</p>
       )}
     </div>
   );

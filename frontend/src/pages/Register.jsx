@@ -56,22 +56,22 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4.5rem)] w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#080C14]">
+    <div className="min-h-[calc(100vh-4.5rem)] w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50 dark:bg-[#080C14] transition-colors">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         {/* Left Side: Pitch & Value Points */}
         <div className="hidden lg:flex lg:col-span-6 flex-col justify-center pr-6 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 w-fit mb-6">
-            <Zap className="w-4 h-4 text-indigo-400" />
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 dark:bg-indigo-500/10 dark:border-indigo-500/20 w-fit mb-6">
+            <Zap className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            <span className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
               Join 15,000+ Job Seekers
             </span>
           </div>
 
-          <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-tight mb-6">
-            Supercharge your job search with <span className="text-indigo-400">ResumeIQ</span>.
+          <h1 className="text-4xl xl:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight mb-6">
+            Supercharge your job search with <span className="text-indigo-600 dark:text-indigo-400">ResumeIQ</span>.
           </h1>
 
-          <p className="text-base text-slate-400 leading-relaxed mb-8">
+          <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
             Create your account to unlock precision ATS matching, detailed keyword diagnostics, and instant high-impact bullet rewriting.
           </p>
 
@@ -92,33 +92,33 @@ const Register = () => {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-3.5 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05]"
+                className="flex items-start gap-3.5 p-3.5 rounded-xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] shadow-xs"
               >
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 dark:bg-emerald-500/15 dark:border-emerald-500/25 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-200">{item.title}</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-slate-200">{item.title}</h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Shield className="w-4 h-4 text-indigo-400" />
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <Shield className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             <span>100% Secure &amp; Confidential. Your resume data is never sold or shared.</span>
           </div>
         </div>
 
         {/* Right Side: Register Card */}
         <div className="lg:col-span-6 w-full max-w-md mx-auto animate-fade-in">
-          <Card className="p-7 sm:p-9 shadow-2xl">
+          <Card className="p-7 sm:p-9 shadow-xl">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white tracking-tight mb-2">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">
                 Create your account
               </h2>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Start scanning and optimizing your resume in seconds.
               </p>
             </div>
@@ -163,19 +163,19 @@ const Register = () => {
                 variant="primary"
                 size="lg"
                 loading={loading}
-                className="w-full h-12 text-sm uppercase tracking-wider font-bold mt-3"
+                className="w-full h-12 text-sm uppercase tracking-wider font-bold mt-3 shadow-md shadow-indigo-600/25"
               >
                 Create Account
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-white/[0.08] text-center">
-              <p className="text-sm text-slate-400">
+            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/[0.08] text-center">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                  className="font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
                 >
                   Sign in
                 </Link>

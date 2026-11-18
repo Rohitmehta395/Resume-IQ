@@ -34,16 +34,16 @@ const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section id="faq" className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-[#090D16] border-t border-white/[0.06]">
+    <section id="faq" className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-slate-100/70 dark:bg-[#090D16] border-t border-slate-200 dark:border-white/[0.06] transition-colors">
       <div className="max-w-4xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <Badge variant="indigo" size="md" className="mb-4">
             Questions &amp; Answers
           </Badge>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4 font-sans">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight mb-4 font-sans">
             Frequently Asked Questions
           </h2>
-          <p className="text-base sm:text-lg text-slate-400 leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
             Everything you need to know about ATS optimization and the ResumeIQ platform.
           </p>
         </div>
@@ -54,22 +54,22 @@ const FAQ = () => {
             return (
               <div
                 key={idx}
-                className="rounded-2xl border border-white/[0.08] bg-[#0F172A] overflow-hidden transition-all duration-200"
+                className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0F172A] overflow-hidden transition-all duration-200 shadow-xs"
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? -1 : idx)}
-                  className="w-full p-6 text-left flex justify-between items-center gap-4 hover:bg-white/[0.02] transition-colors cursor-pointer"
+                  className="w-full p-6 text-left flex justify-between items-center gap-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-base sm:text-lg font-bold text-white tracking-tight">
+                  <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                     {faq.question}
                   </span>
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-white/[0.08] transition-transform duration-300 ${
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border transition-transform duration-300 ${
                       isOpen
-                        ? "rotate-180 bg-indigo-500/20 text-indigo-300 border-indigo-500/30"
-                        : "bg-white/[0.04] text-slate-400"
+                        ? "rotate-180 bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30"
+                        : "bg-slate-100 text-slate-500 border-slate-200 dark:bg-white/[0.04] dark:text-slate-400 dark:border-white/[0.08]"
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
@@ -77,8 +77,8 @@ const FAQ = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-6 pt-1 animate-fade-in border-t border-white/[0.04]">
-                    <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans">
+                  <div className="px-6 pb-6 pt-1 animate-fade-in border-t border-slate-100 dark:border-white/[0.04]">
+                    <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
                       {faq.answer}
                     </p>
                   </div>

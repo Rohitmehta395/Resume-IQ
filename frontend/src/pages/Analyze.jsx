@@ -44,17 +44,21 @@ const StepItem = ({ number, label, done, active }) => (
     <div
       className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-mono font-bold transition-all ${
         done
-          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+          ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
           : active
           ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-          : "bg-white/[0.04] text-slate-400 border border-white/[0.08]"
+          : "bg-slate-100 text-slate-500 border border-slate-200 dark:bg-white/[0.04] dark:text-slate-400 dark:border-white/[0.08]"
       }`}
     >
-      {done ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : number}
+      {done ? <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : number}
     </div>
     <span
       className={`text-xs font-semibold ${
-        active ? "text-white" : done ? "text-slate-300" : "text-slate-400"
+        active
+          ? "text-slate-900 dark:text-white"
+          : done
+          ? "text-slate-700 dark:text-slate-300"
+          : "text-slate-500 dark:text-slate-400"
       }`}
     >
       {label}
@@ -172,18 +176,18 @@ const Analyze = () => {
   return (
     <div className="space-y-8 animate-fade-in relative">
       {/* ══ HEADER ══ */}
-      <div className="pb-6 border-b border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="pb-6 border-b border-slate-200 dark:border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_8px_#6366F1]" />
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+            <span className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366F1]" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Heuristic ATS Audit Studio
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight font-sans">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
             Scan &amp; Optimize Your Resume
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
             Upload your resume, add your target job posting, and receive a multi-vector ATS compliance audit.
           </p>
         </div>
@@ -191,21 +195,21 @@ const Analyze = () => {
         <button
           type="button"
           onClick={loadSampleJD}
-          className="self-start md:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-xs font-mono font-semibold text-slate-300 border border-white/[0.08] transition-colors cursor-pointer"
+          className="self-start md:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] dark:text-slate-300 dark:border-white/[0.08] text-xs font-mono font-semibold transition-colors cursor-pointer shadow-xs"
         >
-          <Copy className="w-3.5 h-3.5 text-indigo-400" />
+          <Copy className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
           Load Sample Posting
         </button>
       </div>
 
       {/* ══ STEP PROGRESSION BAR ══ */}
-      <div className="flex flex-wrap items-center gap-4 sm:gap-6 p-4 rounded-2xl bg-[#0F172A] border border-white/[0.08]">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6 p-4 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-white/[0.08] shadow-xs transition-colors">
         <StepItem number="1" label="Upload Resume" done={isStep1Done} active={!isStep1Done} />
-        <ChevronRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+        <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-600 hidden sm:block" />
         <StepItem number="2" label="Role Details" done={isStep2Done} active={isStep1Done && !isStep2Done} />
-        <ChevronRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+        <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-600 hidden sm:block" />
         <StepItem number="3" label="Job Description" done={isStep3Done} active={isStep2Done && !isStep3Done} />
-        <ChevronRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+        <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-600 hidden sm:block" />
         <StepItem number="4" label="Generate Report" done={false} active={isStep1Done && isStep2Done && isStep3Done} />
       </div>
 
@@ -218,12 +222,12 @@ const Analyze = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400 flex items-center justify-center">
                     <Upload className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white">Resume Document</h3>
-                    <p className="text-xs text-slate-400">PDF or DOCX (Max 5MB)</p>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Resume Document</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">PDF or DOCX (Max 5MB)</p>
                   </div>
                 </div>
 
@@ -243,10 +247,10 @@ const Analyze = () => {
                 onDrop={handleDrop}
                 className={`relative border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-200 ${
                   file
-                    ? "border-emerald-500/40 bg-emerald-500/[0.04]"
+                    ? "border-emerald-500/50 bg-emerald-50/50 dark:border-emerald-500/40 dark:bg-emerald-500/[0.04]"
                     : dragOver
-                    ? "border-indigo-500 bg-indigo-500/[0.08]"
-                    : "border-white/[0.1] hover:border-indigo-500/40 bg-[#090D16]"
+                    ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/[0.08]"
+                    : "border-slate-300 hover:border-indigo-500/50 bg-slate-50/80 dark:border-white/[0.1] dark:hover:border-indigo-500/40 dark:bg-[#090D16]"
                 }`}
               >
                 <input
@@ -259,13 +263,13 @@ const Analyze = () => {
 
                 {file ? (
                   <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 dark:bg-emerald-500/15 dark:border-emerald-500/30 dark:text-emerald-400 flex items-center justify-center mb-3">
                       <FileCheck className="w-6 h-6" />
                     </div>
-                    <span className="text-sm font-bold text-emerald-300 max-w-xs truncate">
+                    <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300 max-w-xs truncate">
                       {file.name}
                     </span>
-                    <span className="text-xs font-mono text-slate-400 mt-0.5">
+                    <span className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
                       {(file.size / (1024 * 1024)).toFixed(2)} MB • Verified Format
                     </span>
                     <button
@@ -275,20 +279,20 @@ const Analyze = () => {
                         e.preventDefault();
                         setFile(null);
                       }}
-                      className="relative z-20 mt-3 inline-flex items-center gap-1 text-xs text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
+                      className="relative z-20 mt-3 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors cursor-pointer"
                     >
                       <X className="w-3.5 h-3.5" /> Remove file
                     </button>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center py-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 dark:bg-white/[0.04] dark:border-white/[0.08] dark:text-slate-400 flex items-center justify-center mb-3">
                       <Upload className="w-6 h-6" />
                     </div>
-                    <span className="text-sm font-bold text-slate-200">
+                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
                       Drop your resume here
                     </span>
-                    <span className="text-xs text-slate-400 mt-1">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       or click to browse from device
                     </span>
                   </div>
@@ -299,12 +303,12 @@ const Analyze = () => {
             {/* 2. Target Job Metadata */}
             <Card className="p-6 space-y-4">
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 text-sky-600 dark:bg-sky-500/10 dark:border-sky-500/20 dark:text-sky-400 flex items-center justify-center">
                   <Briefcase className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">Target Position</h3>
-                  <p className="text-xs text-slate-400">Specify the role and organization</p>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Target Position</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Specify the role and organization</p>
                 </div>
               </div>
 
@@ -329,22 +333,22 @@ const Analyze = () => {
             </Card>
 
             {/* 3. ATS Screening Rules Advice */}
-            <Card className="p-5 bg-gradient-to-br from-[#0F172A] to-[#162032] border-indigo-500/20">
-              <div className="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-3">
+            <Card className="p-5 bg-gradient-to-br from-white to-indigo-50/40 dark:from-[#0F172A] dark:to-[#162032] border-indigo-200 dark:border-indigo-500/20 transition-colors">
+              <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-3">
                 <Zap className="w-4 h-4" />
                 <span>ATS Screening Rules</span>
               </div>
-              <ul className="space-y-2 text-xs text-slate-300 leading-relaxed">
+              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <span>Use standard section titles: Experience, Skills, Education.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <span>Avoid multi-column tables or text boxes; single column parses 100% reliably.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <span>Match exact keyword syntax used in the job description.</span>
                 </li>
               </ul>
@@ -354,14 +358,14 @@ const Analyze = () => {
           {/* ── RIGHT PANEL: JOB DESCRIPTION & TRIGGER (Span 7) ── */}
           <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
             <Card className="p-6 flex-1 flex flex-col">
-              <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-4">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.08] mb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400 flex items-center justify-center">
                     <FileText className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white">Full Job Description</h3>
-                    <p className="text-xs text-slate-400">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Full Job Description</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Paste the complete posting text for deep semantic extraction
                     </p>
                   </div>
@@ -372,15 +376,15 @@ const Analyze = () => {
                   <div
                     className={`px-3 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 ${
                       jdWords >= 50
-                        ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/25"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/25"
                         : jdWords > 0
-                        ? "bg-amber-500/10 text-amber-300 border-amber-500/25"
-                        : "bg-white/[0.04] text-slate-400 border-white/[0.08]"
+                        ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/25"
+                        : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-white/[0.04] dark:text-slate-400 dark:border-white/[0.08]"
                     }`}
                   >
                     <span>{jdWords} words</span>
                     {jdWords < 50 && (
-                      <span className="text-[10px] text-amber-400 font-sans font-medium">
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-sans font-medium">
                         (min 50)
                       </span>
                     )}
@@ -402,9 +406,9 @@ const Analyze = () => {
               </div>
 
               {/* Helper Bar */}
-              <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
+              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <div className="flex items-center gap-2">
-                  <Lock className="w-3.5 h-3.5 text-indigo-400" />
+                  <Lock className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                   <span>Data is processed in an encrypted sandbox.</span>
                 </div>
                 <span>TF-IDF Semantic Match Model</span>
@@ -417,7 +421,7 @@ const Analyze = () => {
               variant="primary"
               size="lg"
               disabled={analyzing || !file || !formData.jobTitle || jdWords < 50}
-              className="w-full h-14 text-sm uppercase tracking-wider font-bold shadow-xl shadow-indigo-600/25"
+              className="w-full h-14 text-sm uppercase tracking-wider font-bold shadow-lg shadow-indigo-600/25"
             >
               <Target className="w-5 h-5 mr-1" />
               Generate Comprehensive ATS Report
@@ -428,61 +432,61 @@ const Analyze = () => {
 
       {/* ══ ACTIVE ANALYSIS MODAL / OVERLAY ══ */}
       {analyzing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <Card className="w-full max-w-md p-8 text-center bg-[#0F172A] border-indigo-500/40 shadow-2xl relative overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mx-auto mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-md animate-fade-in">
+          <Card className="w-full max-w-md p-8 text-center bg-white dark:bg-[#0F172A] border-slate-200 dark:border-indigo-500/40 shadow-2xl relative overflow-hidden transition-colors">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-500/15 dark:border-indigo-500/30 dark:text-indigo-400 flex items-center justify-center mx-auto mb-6">
               <Sparkles className="w-8 h-8 animate-pulse" />
             </div>
 
-            <h3 className="text-xl font-extrabold text-white tracking-tight mb-2">
+            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
               Auditing ATS Compatibility
             </h3>
-            <p className="text-sm text-slate-400 mb-6">
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
               Comparing resume experience against job requirements…
             </p>
 
             {/* Progress Steps */}
-            <div className="space-y-3 text-left p-4 rounded-xl bg-[#090D16] border border-white/[0.06] font-mono text-xs mb-6">
+            <div className="space-y-3 text-left p-4 rounded-xl bg-slate-50 dark:bg-[#090D16] border border-slate-200 dark:border-white/[0.06] font-mono text-xs mb-6">
               <div className="flex items-center gap-2.5">
                 {analysisStep >= 1 ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin shrink-0" />
+                  <div className="w-4 h-4 rounded-full border-2 border-indigo-600 dark:border-indigo-500 border-t-transparent animate-spin shrink-0" />
                 )}
-                <span className={analysisStep >= 1 ? "text-slate-200" : "text-indigo-300"}>
+                <span className={analysisStep >= 1 ? "text-slate-900 dark:text-slate-200" : "text-indigo-600 dark:text-indigo-300"}>
                   Extracting sections, skills, &amp; metrics…
                 </span>
               </div>
 
               <div className="flex items-center gap-2.5">
                 {analysisStep >= 2 ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 ) : analysisStep === 1 ? (
-                  <div className="w-4 h-4 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin shrink-0" />
+                  <div className="w-4 h-4 rounded-full border-2 border-indigo-600 dark:border-indigo-500 border-t-transparent animate-spin shrink-0" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full bg-white/[0.08] shrink-0" />
+                  <div className="w-4 h-4 rounded-full bg-slate-300 dark:bg-white/[0.08] shrink-0" />
                 )}
-                <span className={analysisStep >= 2 ? "text-slate-200" : "text-slate-400"}>
+                <span className={analysisStep >= 2 ? "text-slate-900 dark:text-slate-200" : "text-slate-500 dark:text-slate-400"}>
                   Calculating heuristic match scores…
                 </span>
               </div>
 
               <div className="flex items-center gap-2.5">
                 {analysisStep >= 3 ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 ) : analysisStep === 2 ? (
-                  <div className="w-4 h-4 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin shrink-0" />
+                  <div className="w-4 h-4 rounded-full border-2 border-indigo-600 dark:border-indigo-500 border-t-transparent animate-spin shrink-0" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full bg-white/[0.08] shrink-0" />
+                  <div className="w-4 h-4 rounded-full bg-slate-300 dark:bg-white/[0.08] shrink-0" />
                 )}
-                <span className={analysisStep >= 3 ? "text-slate-200" : "text-slate-400"}>
+                <span className={analysisStep >= 3 ? "text-slate-900 dark:text-slate-200" : "text-slate-500 dark:text-slate-400"}>
                   Generating Google X-Y-Z rewrites…
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]" />
+            <div className="flex items-center justify-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" />
               <span>Analyzing in secure sandbox</span>
             </div>
           </Card>

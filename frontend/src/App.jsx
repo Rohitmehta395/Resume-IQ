@@ -1,22 +1,27 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Analyze from './pages/Analyze';
-import Report from './pages/Report';
-import { Toaster } from 'react-hot-toast';
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Analyze from "./pages/Analyze";
+import Report from "./pages/Report";
+import { Toaster } from "react-hot-toast";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
-  
+  const isHomePage = location.pathname === "/";
+
   return (
-    <div className={`min-h-screen bg-[#080C14] text-[#F8FAFC] ${isHomePage ? '' : 'py-8 md:py-10'}`}>
-      <div className={isHomePage ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
+    <div
+      className={`min-h-screen bg-slate-50 text-slate-900 dark:bg-[#080C14] dark:text-[#F8FAFC] transition-colors duration-200 ${
+        isHomePage ? "" : "py-8 md:py-10"
+      }`}
+    >
+      <div className={isHomePage ? "" : "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"}>
         {children}
       </div>
     </div>
@@ -25,59 +30,67 @@ const Layout = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-[#080C14] text-[#F8FAFC]">
-          <Toaster 
-            position="top-right" 
-            toastOptions={{
-              duration: 4000,
-              style: {
-                borderRadius: '12px',
-                background: '#0F172A',
-                color: '#F8FAFC',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
-                fontSize: '14px',
-                fontWeight: '500',
-              },
-            }} 
-          />
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Layout><Home /></Layout>} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            
-            {/* Protected Routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Layout><Dashboard /></Layout>
-                </ProtectedRoute>
-              }
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#080C14] dark:text-[#F8FAFC] transition-colors duration-200">
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                className:
+                  "!rounded-xl !text-sm !font-medium !shadow-lg !border !border-slate-200 !bg-white !text-slate-900 dark:!border-white/10 dark:!bg-[#0F172A] dark:!text-[#F8FAFC] dark:!shadow-2xl",
+              }}
             />
-            <Route
-              path="/analyze"
-              element={
-                <ProtectedRoute>
-                  <Layout><Analyze /></Layout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/report"
-              element={
-                <ProtectedRoute>
-                  <Layout><Report /></Layout>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
+            <Navbar />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Layout>
+                    <Home />
+                  </Layout>
+                }
+              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+
+              {/* Protected Routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Dashboard />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/analyze"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Analyze />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/report"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Report />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

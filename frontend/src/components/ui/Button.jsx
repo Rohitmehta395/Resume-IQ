@@ -9,21 +9,21 @@ const Button = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080C14] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none";
+    "inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#080C14] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none";
 
   const variants = {
     primary:
-      "bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-md shadow-indigo-600/25 hover:shadow-indigo-600/40 focus-visible:ring-indigo-500",
+      "bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-sm shadow-indigo-600/25 hover:shadow-indigo-600/40 focus-visible:ring-indigo-500",
     secondary:
-      "bg-[#162032] hover:bg-[#1E293B] text-slate-200 hover:text-white border border-white/[0.08] hover:border-white/[0.15] focus-visible:ring-slate-400",
+      "bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 dark:bg-[#162032] dark:hover:bg-[#1E293B] dark:text-slate-200 dark:hover:text-white dark:border-white/[0.08] dark:hover:border-white/[0.15] focus-visible:ring-slate-400",
     outline:
-      "bg-transparent text-indigo-400 hover:text-indigo-300 border border-indigo-500/40 hover:border-indigo-500/70 hover:bg-indigo-500/10 focus-visible:ring-indigo-500",
+      "bg-transparent text-indigo-600 hover:text-indigo-700 border border-indigo-200 hover:border-indigo-400 hover:bg-indigo-50/50 dark:text-indigo-400 dark:hover:text-indigo-300 dark:border-indigo-500/40 dark:hover:border-indigo-500/70 dark:hover:bg-indigo-500/10 focus-visible:ring-indigo-500",
     ghost:
-      "bg-transparent text-slate-300 hover:text-white hover:bg-white/[0.06] focus-visible:ring-slate-400",
+      "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/[0.06] focus-visible:ring-slate-400",
     danger:
-      "bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 border border-rose-500/30 hover:border-rose-500/50 focus-visible:ring-rose-500",
+      "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:hover:bg-rose-500/25 dark:border-rose-500/30 dark:hover:border-rose-500/50 focus-visible:ring-rose-500",
     success:
-      "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 border border-emerald-500/30 hover:border-emerald-500/50 focus-visible:ring-emerald-500",
+      "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25 dark:border-emerald-500/30 dark:hover:border-emerald-500/50 focus-visible:ring-emerald-500",
   };
 
   const sizes = {
@@ -62,7 +62,7 @@ const Button = ({
       ) : Icon && iconPosition === "left" ? (
         <Icon className="h-4 w-4 shrink-0" />
       ) : null}
-      
+
       {children}
 
       {!loading && Icon && iconPosition === "right" && (

@@ -21,7 +21,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#080C14]">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-[#080C14] transition-colors">
       {/* Hero Section */}
       <Hero onStart={handleStart} />
 
@@ -36,17 +36,17 @@ const Home = () => {
 
       {/* Final Action Banner */}
       {!user && (
-        <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-[#090D16] border-t border-white/[0.08] relative overflow-hidden">
-          <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-[#111827] to-[#0B0F1A] border border-white/[0.1] p-8 sm:p-14 text-center shadow-2xl relative">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mx-auto mb-6">
+        <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-slate-100/70 dark:bg-[#090D16] border-t border-slate-200 dark:border-white/[0.08] relative overflow-hidden transition-colors">
+          <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-white to-slate-50 border border-slate-200 dark:from-[#111827] dark:to-[#0B0F1A] dark:border-white/[0.1] p-8 sm:p-14 text-center shadow-xl dark:shadow-2xl relative transition-colors">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-500/15 dark:border-indigo-500/30 dark:text-indigo-400 flex items-center justify-center mx-auto mb-6">
               <Sparkles className="w-7 h-7" />
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4 font-sans">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight mb-4 font-sans">
               Ready to pass the ATS filter?
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-300 mb-8 max-w-xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-xl mx-auto leading-relaxed">
               Upload your resume now to run your first diagnostic scan and generate tailored AI rewrites in less than 30 seconds.
             </p>
 
@@ -55,7 +55,7 @@ const Home = () => {
                 size="lg"
                 variant="primary"
                 onClick={handleStart}
-                className="w-full sm:w-auto h-13 px-8 text-sm uppercase tracking-wider font-bold shadow-lg shadow-indigo-600/30"
+                className="w-full sm:w-auto h-13 px-8 text-sm uppercase tracking-wider font-bold shadow-md shadow-indigo-600/30"
               >
                 Get Started Free
                 <ArrowRight className="w-4 h-4 ml-1" />
@@ -64,14 +64,14 @@ const Home = () => {
                 size="lg"
                 variant="secondary"
                 onClick={() => navigate("/login")}
-                className="w-full sm:w-auto h-13 px-8 text-sm font-bold"
+                className="w-full sm:w-auto h-13 px-8 text-sm font-bold shadow-xs"
               >
                 Sign In
               </Button>
             </div>
 
-            <div className="mt-8 flex items-center justify-center gap-2 text-xs text-slate-400 font-medium">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <div className="mt-8 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+              <ShieldCheck className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               <span>No credit card required. Free instant analysis.</span>
             </div>
           </div>

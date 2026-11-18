@@ -7,7 +7,7 @@ const PageHeader = ({
 }) => {
   return (
     <div
-      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-white/[0.08] mb-8 ${className}`}
+      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-slate-200 dark:border-white/[0.08] mb-8 ${className}`}
     >
       <div>
         {badge && (
@@ -15,11 +15,11 @@ const PageHeader = ({
             {badge}
           </div>
         )}
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight font-sans">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-1.5 text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
+          <p className="mt-1.5 text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
             {subtitle}
           </p>
         )}

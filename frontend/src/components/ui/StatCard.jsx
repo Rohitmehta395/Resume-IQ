@@ -11,34 +11,34 @@ const StatCard = ({
 }) => {
   const colorStyles = {
     indigo: {
-      bg: "bg-indigo-500/10",
-      border: "border-indigo-500/20",
-      text: "text-indigo-400",
+      bg: "bg-indigo-50 dark:bg-indigo-500/10",
+      border: "border-indigo-200 dark:border-indigo-500/20",
+      text: "text-indigo-600 dark:text-indigo-400",
     },
     sky: {
-      bg: "bg-sky-500/10",
-      border: "border-sky-500/20",
-      text: "text-sky-400",
+      bg: "bg-sky-50 dark:bg-sky-500/10",
+      border: "border-sky-200 dark:border-sky-500/20",
+      text: "text-sky-600 dark:text-sky-400",
     },
     emerald: {
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
-      text: "text-emerald-400",
+      bg: "bg-emerald-50 dark:bg-emerald-500/10",
+      border: "border-emerald-200 dark:border-emerald-500/20",
+      text: "text-emerald-600 dark:text-emerald-400",
     },
     amber: {
-      bg: "bg-amber-500/10",
-      border: "border-amber-500/20",
-      text: "text-amber-400",
+      bg: "bg-amber-50 dark:bg-amber-500/10",
+      border: "border-amber-200 dark:border-amber-500/20",
+      text: "text-amber-600 dark:text-amber-400",
     },
     rose: {
-      bg: "bg-rose-500/10",
-      border: "border-rose-500/20",
-      text: "text-rose-400",
+      bg: "bg-rose-50 dark:bg-rose-500/10",
+      border: "border-rose-200 dark:border-rose-500/20",
+      text: "text-rose-600 dark:text-rose-400",
     },
     blue: {
-      bg: "bg-sky-500/10",
-      border: "border-sky-500/20",
-      text: "text-sky-400",
+      bg: "bg-sky-50 dark:bg-sky-500/10",
+      border: "border-sky-200 dark:border-sky-500/20",
+      text: "text-sky-600 dark:text-sky-400",
     },
   };
 
@@ -48,15 +48,15 @@ const StatCard = ({
     <Card hover className="relative overflow-hidden flex flex-col justify-between">
       <div className="flex items-start justify-between gap-4 mb-4">
         <div>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+          <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
             {label}
           </p>
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-mono">
+            <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono">
               {value}
             </span>
             {unit && (
-              <span className="text-lg font-bold text-slate-400">
+              <span className="text-lg font-bold text-slate-500 dark:text-slate-400">
                 {unit}
               </span>
             )}
@@ -72,12 +72,12 @@ const StatCard = ({
       </div>
 
       {(description || trend) && (
-        <div className="flex items-center justify-between text-xs pt-3 border-t border-white/[0.06]">
-          {description && <span className="text-slate-400">{description}</span>}
+        <div className="flex items-center justify-between text-xs pt-3 border-t border-slate-100 dark:border-white/[0.06]">
+          {description && <span className="text-slate-500 dark:text-slate-400">{description}</span>}
           {trend && (
             <span
               className={`font-semibold ml-auto flex items-center gap-1 ${
-                trend.positive ? "text-emerald-400" : "text-rose-400"
+                trend.positive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
               }`}
             >
               {trend.positive ? "↑" : "↓"} {trend.value}

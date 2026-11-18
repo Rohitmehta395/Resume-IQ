@@ -17,7 +17,7 @@ const Tabs = ({
 
   return (
     <div
-      className={`inline-flex items-center rounded-2xl bg-[#090D16] border border-white/[0.08] ${
+      className={`inline-flex items-center rounded-2xl bg-slate-100 border border-slate-200 dark:bg-[#090D16] dark:border-white/[0.08] transition-colors ${
         sizeStyles[size] || sizeStyles.md
       } ${className}`}
       role="tablist"
@@ -35,18 +35,18 @@ const Tabs = ({
               itemSizeStyles[size] || itemSizeStyles.md
             } ${
               isActive
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
+                ? "bg-white text-indigo-600 shadow-sm dark:bg-indigo-600 dark:text-white dark:shadow-md dark:shadow-indigo-600/30"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/[0.04]"
             }`}
           >
             {Icon && <Icon className="w-4 h-4 shrink-0" />}
             <span>{tab.label}</span>
             {tab.count !== undefined && (
               <span
-                className={`text-[11px] font-mono font-bold px-1.5 py-0.2 rounded-md ${
+                className={`text-[11px] font-mono font-bold px-1.5 py-0.5 rounded-md ${
                   isActive
-                    ? "bg-white/20 text-white"
-                    : "bg-white/[0.08] text-slate-400"
+                    ? "bg-indigo-100 text-indigo-700 dark:bg-white/20 dark:text-white"
+                    : "bg-slate-200 text-slate-700 dark:bg-white/[0.08] dark:text-slate-400"
                 }`}
               >
                 {tab.count}

@@ -37,25 +37,25 @@ const Modal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-black/50 dark:bg-black/75 backdrop-blur-sm transition-opacity animate-fade-in"
         onClick={() => !loading && onClose()}
       />
 
       {/* Dialog Box */}
       <div
-        className={`relative w-full ${maxWidth} rounded-2xl bg-[#0F172A] border border-white/[0.1] p-6 shadow-2xl shadow-black/80 z-10 animate-fade-in`}
+        className={`relative w-full ${maxWidth} rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-white/[0.1] p-6 shadow-2xl z-10 animate-fade-in transition-colors`}
         role="dialog"
         aria-modal="true"
       >
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             {title && (
-              <h3 className="text-lg font-bold text-white tracking-tight">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                 {title}
               </h3>
             )}
             {description && (
-              <p className="mt-1 text-sm text-slate-400 leading-relaxed">
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 {description}
               </p>
             )}
@@ -63,7 +63,7 @@ const Modal = ({
           <button
             onClick={onClose}
             disabled={loading}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors"
+            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/[0.08] transition-colors"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
@@ -72,7 +72,7 @@ const Modal = ({
 
         {children && <div className="mb-6">{children}</div>}
 
-        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-white/[0.08]">
+        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-white/[0.08]">
           <Button
             type="button"
             variant="ghost"
