@@ -32,7 +32,7 @@ const Hero = ({ onStart }) => {
   };
 
   return (
-    <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-50 dark:bg-[#080C14] transition-colors">
+    <section className="relative pt-12 pb-20 lg:pt-10 lg:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-50 dark:bg-[#080C14] transition-colors">
       {/* ── Soft Atmospheric Ambient Mesh Gradients (like the reference image) ── */}
       <div className="absolute top-0 right-0 w-[650px] h-[550px] bg-gradient-to-bl from-emerald-200/40 via-teal-100/30 to-transparent dark:from-emerald-500/10 dark:via-teal-500/5 dark:to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[450px] bg-gradient-to-t from-indigo-200/40 via-purple-100/25 to-transparent dark:from-indigo-500/10 dark:via-purple-500/5 dark:to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
@@ -44,7 +44,7 @@ const Hero = ({ onStart }) => {
           <div className="lg:col-span-6 text-center lg:text-left z-10 max-w-xl mx-auto lg:mx-0">
             {/* Tag / Category Eyebrow */}
             <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 font-mono block mb-4">
-              Resume Checker
+              AI-Powered ATS Scanner
             </span>
 
             {/* Main Headline */}
@@ -54,9 +54,7 @@ const Hero = ({ onStart }) => {
 
             {/* Subheadline */}
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-8 font-sans">
-              A free and fast AI resume checker doing 27 crucial checks to ensure
-              your resume's content, layout and design is technically compatible
-              with the applicant tracking systems and get you interview callbacks.
+              An AI-powered resume analyzer that benchmarks your resume against any target job description. Detect missing keywords, verify ATS formatting compliance, and get actionable recommendations with tailored bullet rewrites to help you land more interviews.
             </p>
 
             {/* In-Hero Upload Dropzone Card */}
